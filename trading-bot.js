@@ -15,6 +15,18 @@ class ScalpingBot {
         this.maPeriod = 20;
         this.volumeWeight = 0.3;
         
+        // Signal Thresholds
+        this.SIGNAL_BUY_THRESHOLD = 30;
+        this.SIGNAL_SELL_THRESHOLD = -30;
+        
+        // Price Simulation Constants
+        this.PRICE_VOLATILITY_BASE = 0.5;
+        this.PRICE_VOLATILITY_RANGE = 0.5;
+        
+        // UI Constants
+        this.MAX_LOG_ENTRIES = 50;
+        this.GRID_LINES = 5;
+        
         this.initChart();
         this.attachEventListeners();
         this.initializeData();
@@ -103,7 +115,7 @@ class ScalpingBot {
     update() {
         // Simulate price movement with realistic behavior
         const trend = Math.sin(Date.now() / 10000) * 0.5;
-        const volatility = 0.5 + Math.random() * 0.5;
+        const volatility = this.PRICE_VOLATILITY_BASE + Math.random() * this.PRICE_VOLATILITY_RANGE;
         const change = (Math.random() - 0.5 + trend) * volatility;
         
         this.currentPrice += change;
@@ -174,10 +186,13 @@ class ScalpingBot {
 
     calculateRSI() {
         const period = Math.min(this.rsiPeriod, this.priceHistory.length - 1);
+        if (period < 1) return 50; // Return neutral RSI if insufficient data
+        
         let gains = 0;
         let losses = 0;
         
-        for (let i = this.priceHistory.length - period; i < this.priceHistory.length; i++) {
+        const startIndex = Math.max(1, this.priceHistory.length - period);
+        for (let i = startIndex; i < this.priceHistory.length; i++) {
             const change = this.priceHistory[i].price - this.priceHistory[i - 1].price;
             if (change > 0) {
                 gains += change;
@@ -217,6 +232,8 @@ class ScalpingBot {
         const recentAvgVol = recent.reduce((sum, d) => sum + d.volume, 0) / recent.length;
         const olderAvgVol = older.reduce((sum, d) => sum + d.volume, 0) / older.length;
         
+        if (olderAvgVol === 0) return 0; // Prevent division by zero
+        
         return (recentAvgVol - olderAvgVol) / olderAvgVol;
     }
 
@@ -234,7 +251,7 @@ class ScalpingBot {
         let newSignal = 'NEUTRAL';
         
         // Strong buy signal
-        if (this.momentum > 30) {
+        if (this.momentum > this.SIGNAL_BUY_THRESHOLD) {
             newSignal = 'BUY';
             if (this.signal !== 'BUY') {
                 this.addLog(
@@ -244,7 +261,7 @@ class ScalpingBot {
             }
         }
         // Strong sell signal
-        else if (this.momentum < -30) {
+        else if (this.momentum < this.SIGNAL_SELL_THRESHOLD) {
             newSignal = 'SELL';
             if (this.signal !== 'SELL') {
                 this.addLog(
@@ -305,15 +322,15 @@ class ScalpingBot {
         ctx.strokeStyle = '#e5e7eb';
         ctx.lineWidth = 1;
         
-        for (let i = 0; i < 5; i++) {
-            const y = (height / 4) * i;
+        for (let i = 0; i < this.GRID_LINES; i++) {
+            const y = (height / (this.GRID_LINES - 1)) * i;
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(width, y);
             ctx.stroke();
             
             // Price labels
-            const price = maxPrice + padding - ((priceRange + 2 * padding) / 4) * i;
+            const price = maxPrice + padding - ((priceRange + 2 * padding) / (this.GRID_LINES - 1)) * i;
             ctx.fillStyle = '#6b7280';
             ctx.font = '12px sans-serif';
             ctx.fillText(`$${price.toFixed(2)}`, 5, y - 5);
@@ -372,8 +389,8 @@ class ScalpingBot {
         
         logContainer.insertBefore(logEntry, logContainer.firstChild);
         
-        // Keep only last 50 entries
-        while (logContainer.children.length > 50) {
+        // Keep only last MAX_LOG_ENTRIES entries
+        while (logContainer.children.length > this.MAX_LOG_ENTRIES) {
             logContainer.removeChild(logContainer.lastChild);
         }
     }
