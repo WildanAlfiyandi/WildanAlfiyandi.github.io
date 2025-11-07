@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Scalping Trading XAU/USD - AI Momentum</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Bot Scalping Trading XAU/USD</h1>
+            <p class="subtitle">Powered by AI Momentum Detection</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Status Panel -->
+            <div class="status-panel">
+                <div class="status-item">
+                    <span class="label">Status Bot:</span>
+                    <span id="bot-status" class="value status-inactive">Tidak Aktif</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Harga XAU/USD:</span>
+                    <span id="current-price" class="value">Loading...</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Momentum AI:</span>
+                    <span id="momentum" class="value">-</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Sinyal:</span>
+                    <span id="signal" class="value signal-neutral">NEUTRAL</span>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <button id="start-bot" class="btn btn-start">▶ Jalankan Bot</button>
+                <button id="stop-bot" class="btn btn-stop" disabled>⏸ Stop Bot</button>
+                <button id="reset-data" class="btn btn-reset">🔄 Reset Data</button>
+            </div>
+
+            <!-- Trading Log -->
+            <div class="trading-log">
+                <h3>📊 Log Trading</h3>
+                <div id="log-container" class="log-content">
+                    <p class="log-entry info">Bot siap dijalankan. Klik "Jalankan Bot" untuk memulai.</p>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3>📖 Cara Menggunakan Bot</h3>
+                <ol>
+                    <li><strong>Buka Website:</strong> Akses website ini melalui browser (Chrome, Firefox, Safari, dll)</li>
+                    <li><strong>Jalankan Bot:</strong> Klik tombol "▶ Jalankan Bot" untuk memulai</li>
+                    <li><strong>Monitor:</strong> Bot akan otomatis menganalisis momentum XAU/USD menggunakan AI</li>
+                    <li><strong>Sinyal Trading:</strong> Perhatikan sinyal BUY/SELL yang muncul berdasarkan analisis AI</li>
+                    <li><strong>Stop Bot:</strong> Klik "⏸ Stop Bot" untuk menghentikan sementara</li>
+                </ol>
+                
+                <h4>🧠 Cara Kerja AI Momentum:</h4>
+                <ul>
+                    <li>Bot menganalisis pergerakan harga secara real-time</li>
+                    <li>AI mendeteksi momentum menggunakan multiple indicators (RSI, Moving Average, Volume)</li>
+                    <li>Sinyal <span class="signal-buy">BUY</span> muncul saat momentum bullish terdeteksi</li>
+                    <li>Sinyal <span class="signal-sell">SELL</span> muncul saat momentum bearish terdeteksi</li>
+                    <li>Scalping fokus pada pergerakan kecil untuk profit cepat</li>
+                </ul>
+
+                <h4>⚠️ Disclaimer:</h4>
+                <p class="disclaimer">
+                    Bot ini adalah simulasi untuk tujuan edukasi. Data harga adalah simulasi dan bukan harga real-time dari market.
+                    Gunakan dengan bijak dan lakukan riset sendiri sebelum trading dengan uang sungguhan.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 XAU/USD Scalping Bot | AI-Powered Momentum Detection</p>
+        </footer>
+    </div>
+
+    <script src="trading-bot.js"></script>
+</body>
+</html>
