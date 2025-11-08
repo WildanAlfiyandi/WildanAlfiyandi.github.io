@@ -118,7 +118,10 @@ class TradingAnalyzer {
     // Update market sentiment
     updateSentiment() {
         const sentiment = 55 + Math.random() * 30; // 55-85% bullish
-        document.getElementById('sentimentValue').textContent = `${Math.round(sentiment)}% Bullish`;
+        const sentimentValueEl = document.getElementById('sentimentValue');
+        if (sentimentValueEl) {
+            sentimentValueEl.textContent = `${Math.round(sentiment)}% Bullish`;
+        }
         
         // Update gauge pointer
         const pointer = document.getElementById('gaugePointer');
@@ -135,12 +138,18 @@ class TradingAnalyzer {
         
         if (buyBar) {
             buyBar.style.width = `${buyPressure}%`;
-            buyBar.parentElement.querySelector('.sentiment-percent').textContent = `${Math.round(buyPressure)}%`;
+            const buyPercent = buyBar.parentElement.querySelector('.sentiment-percent');
+            if (buyPercent) {
+                buyPercent.textContent = `${Math.round(buyPressure)}%`;
+            }
         }
         
         if (sellBar) {
             sellBar.style.width = `${sellPressure}%`;
-            sellBar.parentElement.querySelector('.sentiment-percent').textContent = `${Math.round(sellPressure)}%`;
+            const sellPercent = sellBar.parentElement.querySelector('.sentiment-percent');
+            if (sellPercent) {
+                sellPercent.textContent = `${Math.round(sellPressure)}%`;
+            }
         }
     }
     
