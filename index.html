@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAU/USD Scalping Momentum - AI Trading Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">⚡ XAU/USD Scalping Pro</h1>
+                <div class="header-info">
+                    <span class="status-indicator">
+                        <span class="pulse"></span>
+                        AI Active
+                    </span>
+                    <span id="currentTime" class="time"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Price Card -->
+            <div class="card price-card">
+                <div class="card-header">
+                    <h2>XAU/USD Live Price</h2>
+                    <span class="market-status" id="marketStatus">Market Open</span>
+                </div>
+                <div class="price-display">
+                    <div class="current-price" id="currentPrice">$2,678.45</div>
+                    <div class="price-change" id="priceChange">
+                        <span class="change-value">+12.35</span>
+                        <span class="change-percent">(+0.46%)</span>
+                    </div>
+                </div>
+                <div class="price-stats">
+                    <div class="stat">
+                        <span class="stat-label">High</span>
+                        <span class="stat-value" id="highPrice">$2,685.20</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Low</span>
+                        <span class="stat-value" id="lowPrice">$2,665.80</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Volume</span>
+                        <span class="stat-value" id="volume">145.2K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Signal Card -->
+            <div class="card signal-card">
+                <div class="card-header">
+                    <h2>🤖 AI Scalping Signal</h2>
+                    <span class="confidence-badge" id="confidence">95% Confidence</span>
+                </div>
+                <div class="signal-content">
+                    <div class="signal-type" id="signalType">
+                        <span class="signal-icon buy-signal">📈</span>
+                        <span class="signal-text">STRONG BUY</span>
+                    </div>
+                    <div class="signal-details">
+                        <div class="detail-item">
+                            <span class="label">Entry Point:</span>
+                            <span class="value entry" id="entryPoint">$2,678.00 - $2,679.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Take Profit 1:</span>
+                            <span class="value tp" id="tp1">$2,683.50</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Take Profit 2:</span>
+                            <span class="value tp" id="tp2">$2,688.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Stop Loss:</span>
+                            <span class="value sl" id="stopLoss">$2,673.50</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Risk/Reward:</span>
+                            <span class="value rr" id="riskReward">1:2.5</span>
+                        </div>
+                    </div>
+                    <div class="momentum-bar">
+                        <div class="momentum-fill" id="momentumFill" style="width: 82%"></div>
+                        <span class="momentum-label">Momentum: <strong id="momentumValue">82%</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Indicators -->
+            <div class="card indicators-card">
+                <div class="card-header">
+                    <h2>📊 Technical Indicators</h2>
+                    <span class="timeframe-badge">M5 / M15</span>
+                </div>
+                <div class="indicators-grid">
+                    <div class="indicator">
+                        <div class="indicator-name">RSI (14)</div>
+                        <div class="indicator-value" id="rsiValue">68.5</div>
+                        <div class="indicator-status bullish">Bullish</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-bar-fill" style="width: 68.5%; background: linear-gradient(90deg, #10b981, #f59e0b);"></div>
+                        </div>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-name">MACD</div>
+                        <div class="indicator-value" id="macdValue">+3.25</div>
+                        <div class="indicator-status bullish">Strong Buy</div>
+                        <div class="indicator-signal">Signal Line Crossover ✓</div>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-name">EMA 9/21</div>
+                        <div class="indicator-value" id="emaValue">Golden Cross</div>
+                        <div class="indicator-status bullish">Bullish Momentum</div>
+                        <div class="indicator-signal">Fast > Slow ✓</div>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-name">Stochastic</div>
+                        <div class="indicator-value" id="stochValue">72.3</div>
+                        <div class="indicator-status neutral">Overbought Zone</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-bar-fill" style="width: 72.3%; background: linear-gradient(90deg, #10b981, #ef4444);"></div>
+                        </div>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-name">ADX (14)</div>
+                        <div class="indicator-value" id="adxValue">45.8</div>
+                        <div class="indicator-status bullish">Strong Trend</div>
+                        <div class="indicator-signal">Trend Strength: High</div>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-name">Volume Profile</div>
+                        <div class="indicator-value" id="volumeProfile">Above Avg</div>
+                        <div class="indicator-status bullish">High Activity</div>
+                        <div class="indicator-signal">+35% Volume ✓</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Sentiment -->
+            <div class="card sentiment-card">
+                <div class="card-header">
+                    <h2>🎯 Market Sentiment</h2>
+                    <span class="update-time">Updated: <span id="sentimentUpdate">Just now</span></span>
+                </div>
+                <div class="sentiment-content">
+                    <div class="sentiment-gauge">
+                        <div class="gauge-container">
+                            <div class="gauge-fill" id="gaugeFill"></div>
+                            <div class="gauge-pointer" id="gaugePointer"></div>
+                        </div>
+                        <div class="gauge-labels">
+                            <span>Bearish</span>
+                            <span>Neutral</span>
+                            <span>Bullish</span>
+                        </div>
+                        <div class="gauge-value" id="sentimentValue">75% Bullish</div>
+                    </div>
+                    <div class="sentiment-details">
+                        <div class="sentiment-item">
+                            <span class="emoji">📈</span>
+                            <div class="sentiment-info">
+                                <div class="sentiment-label">Buy Pressure</div>
+                                <div class="sentiment-bar">
+                                    <div class="sentiment-bar-fill buy" style="width: 78%"></div>
+                                    <div class="sentiment-percent">78%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sentiment-item">
+                            <span class="emoji">📉</span>
+                            <div class="sentiment-info">
+                                <div class="sentiment-label">Sell Pressure</div>
+                                <div class="sentiment-bar">
+                                    <div class="sentiment-bar-fill sell" style="width: 22%"></div>
+                                    <div class="sentiment-percent">22%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Analysis -->
+            <div class="card analysis-card">
+                <div class="card-header">
+                    <h2>🧠 AI Deep Analysis</h2>
+                    <span class="ai-badge">Neural Network v3.2</span>
+                </div>
+                <div class="analysis-content">
+                    <div class="analysis-summary" id="analysisSummary">
+                        <p><strong>Market Conditions:</strong> XAU/USD is showing strong bullish momentum on the M5 and M15 timeframes. The pair has broken above the key resistance level at $2,675 with significant volume, indicating sustained buying pressure.</p>
+                        
+                        <p><strong>Momentum Analysis:</strong> Multiple technical indicators are aligned for a bullish scalping opportunity. RSI at 68.5 shows strength without extreme overbought conditions. MACD histogram is expanding positively with a recent bullish crossover.</p>
+                        
+                        <p><strong>Key Levels:</strong> Immediate support established at $2,673.50. Resistance levels identified at $2,683.50 (R1) and $2,688.00 (R2). Price action suggests continuation toward R1 in the short term.</p>
+                        
+                        <p><strong>Recommendation:</strong> Enter long positions on minor pullbacks to $2,678-2,679 zone. Target quick scalps of 4-6 pips initially. Monitor for momentum continuation toward extended targets.</p>
+                    </div>
+                    <div class="analysis-tags">
+                        <span class="tag tag-bullish">Bullish Trend</span>
+                        <span class="tag tag-momentum">High Momentum</span>
+                        <span class="tag tag-volume">Strong Volume</span>
+                        <span class="tag tag-breakout">Key Breakout</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Management -->
+            <div class="card risk-card">
+                <div class="card-header">
+                    <h2>⚖️ Risk Management Calculator</h2>
+                </div>
+                <div class="risk-content">
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label>Account Balance ($)</label>
+                            <input type="number" id="accountBalance" value="10000" min="100">
+                        </div>
+                        <div class="input-group">
+                            <label>Risk Per Trade (%)</label>
+                            <input type="number" id="riskPercent" value="1" min="0.1" max="5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Lot Size</label>
+                            <input type="number" id="lotSize" value="0.1" min="0.01" step="0.01">
+                        </div>
+                    </div>
+                    <div class="risk-results">
+                        <div class="risk-result-item">
+                            <span class="risk-label">Max Risk Amount:</span>
+                            <span class="risk-value" id="maxRisk">$100.00</span>
+                        </div>
+                        <div class="risk-result-item">
+                            <span class="risk-label">Position Size:</span>
+                            <span class="risk-value" id="positionSize">0.10 lots</span>
+                        </div>
+                        <div class="risk-result-item">
+                            <span class="risk-label">Potential Profit (TP1):</span>
+                            <span class="risk-value profit" id="potentialProfit">$250.00</span>
+                        </div>
+                        <div class="risk-result-item">
+                            <span class="risk-label">Risk/Reward Ratio:</span>
+                            <span class="risk-value" id="rrRatio">1:2.5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Signals History -->
+            <div class="card history-card">
+                <div class="card-header">
+                    <h2>📜 Recent Signals</h2>
+                    <span class="win-rate">Win Rate: <strong>87%</strong></span>
+                </div>
+                <div class="history-content">
+                    <div class="signal-history-item success">
+                        <div class="history-time">2 hours ago</div>
+                        <div class="history-signal">BUY @ $2,672.50</div>
+                        <div class="history-result">TP1 Hit: +5.5 pips</div>
+                        <div class="history-profit">+$55.00</div>
+                    </div>
+                    <div class="signal-history-item success">
+                        <div class="history-time">4 hours ago</div>
+                        <div class="history-signal">SELL @ $2,670.00</div>
+                        <div class="history-result">TP2 Hit: +8.2 pips</div>
+                        <div class="history-profit">+$82.00</div>
+                    </div>
+                    <div class="signal-history-item success">
+                        <div class="history-time">6 hours ago</div>
+                        <div class="history-signal">BUY @ $2,665.80</div>
+                        <div class="history-result">TP1 Hit: +6.0 pips</div>
+                        <div class="history-profit">+$60.00</div>
+                    </div>
+                    <div class="signal-history-item loss">
+                        <div class="history-time">8 hours ago</div>
+                        <div class="history-signal">SELL @ $2,668.50</div>
+                        <div class="history-result">SL Hit: -4.5 pips</div>
+                        <div class="history-profit loss">-$45.00</div>
+                    </div>
+                    <div class="signal-history-item success">
+                        <div class="history-time">10 hours ago</div>
+                        <div class="history-signal">BUY @ $2,663.00</div>
+                        <div class="history-result">TP2 Hit: +9.5 pips</div>
+                        <div class="history-profit">+$95.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News & Events -->
+            <div class="card news-card">
+                <div class="card-header">
+                    <h2>📰 Market News</h2>
+                    <span class="news-badge">Live Feed</span>
+                </div>
+                <div class="news-content">
+                    <div class="news-item high-impact">
+                        <div class="news-time">15 min ago</div>
+                        <div class="news-impact">🔴 High Impact</div>
+                        <div class="news-title">Fed Interest Rate Decision - Hold at 5.25-5.50%</div>
+                        <div class="news-effect">Positive for Gold ↑</div>
+                    </div>
+                    <div class="news-item medium-impact">
+                        <div class="news-time">1 hour ago</div>
+                        <div class="news-impact">🟡 Medium Impact</div>
+                        <div class="news-title">USD Index Shows Weakness - DXY Down 0.3%</div>
+                        <div class="news-effect">Bullish for XAU/USD ↑</div>
+                    </div>
+                    <div class="news-item low-impact">
+                        <div class="news-time">3 hours ago</div>
+                        <div class="news-impact">🟢 Low Impact</div>
+                        <div class="news-title">Gold Demand from Central Banks Increases</div>
+                        <div class="news-effect">Supportive for Gold ↑</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>⚠️ <strong>Disclaimer:</strong> This is an AI-powered analysis tool for educational purposes. Trading involves substantial risk. Always do your own research and risk management.</p>
+            <p>Last Updated: <span id="lastUpdate"></span> | Data refreshes every 5 seconds</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
