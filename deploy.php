@@ -600,6 +600,9 @@ $username = $_SESSION['user'] ?? 'Guest';
                         <strong>Logged in as: <?php echo htmlspecialchars($username); ?></strong>
                     </div>
                     <div style="display: flex; gap: 10px;">
+                        <a href="activity-log.php" class="btn btn-info">
+                            <i class="fas fa-history"></i> Activity Log
+                        </a>
                         <a href="settings.php" class="btn btn-primary">
                             <i class="fas fa-cog"></i> Settings
                         </a>
