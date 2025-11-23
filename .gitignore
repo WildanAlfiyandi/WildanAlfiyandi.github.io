@@ -1,0 +1,33 @@
+# Deployments directory - user uploaded files
+deployments/
+!deployments/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Session files
+sessions/
+
+# Backup files
+*.bak
+*.backup
+
+# Log files
+*.log
+error_log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Cache files
+cache/
+*.cache
