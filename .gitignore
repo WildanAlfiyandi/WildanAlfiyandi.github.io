@@ -1,5 +1,5 @@
 # Deployments directory - user uploaded files
-deployments/
+deployments/*
 !deployments/.gitkeep
 
 # Temporary files
