@@ -27,7 +27,7 @@ Aplikasi ini adalah WebView wrapper untuk website [WildanAlfiyandi.github.io](ht
 
 1. Install [Android Studio](https://developer.android.com/studio)
 2. Install JDK 8 atau lebih tinggi
-3. Install Android SDK dengan API level 33
+3. Install Android SDK dengan API level 34
 
 ### Langkah-langkah Build
 
@@ -112,7 +112,7 @@ android-app/
 
 - **Language**: Java
 - **Min SDK**: 21 (Android 5.0 Lollipop)
-- **Target SDK**: 33 (Android 13)
+- **Target SDK**: 34 (Android 14)
 - **Build System**: Gradle
 - **WebView**: Android WebView dengan JavaScript enabled
 

@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 public class MainActivity extends Activity {
     private WebView webView;
     private static final String WEBSITE_URL = "https://wildanalfiyandi.github.io/";
+    private static final String ALLOWED_DOMAIN = "wildanalfiyandi.github.io";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,12 @@ public class MainActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+                // Only allow navigation to the GitHub Pages domain
+                if (url != null && url.contains(ALLOWED_DOMAIN)) {
+                    view.loadUrl(url);
+                    return true;
+                }
+                // Block navigation to other domains
                 return true;
             }
         });
