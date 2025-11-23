@@ -28,7 +28,10 @@ const newDeployBtn = document.getElementById('newDeployBtn');
 
 const historyList = document.getElementById('historyList');
 
-// Demo user credentials (in a real app, this would be server-side)
+// Demo user credentials
+// NOTE: This is a client-side demo for GitHub Pages. In a production application,
+// authentication should be handled server-side with proper security measures.
+// These credentials are intentionally simple for demonstration purposes only.
 const users = {
     'admin': 'admin123',
     'user': 'password123',
@@ -209,8 +212,10 @@ async function startDeployment() {
     }
     
     // Generate deployment URL
+    // NOTE: In a real deployment system, this would be an actual working URL
+    // For this demo, we generate a simulated URL to demonstrate the concept
     const deploymentId = generateDeploymentId();
-    const deploymentUrl = `https://${deploymentId}.${window.location.hostname}`;
+    const deploymentUrl = `https://${deploymentId}.kiosmurah.me`;
     
     // Save to history
     const deployment = {
