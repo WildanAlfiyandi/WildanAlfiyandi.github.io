@@ -15,6 +15,13 @@ A powerful PHP-based platform for deploying and managing websites with advanced 
 
 ### 🛠️ Quick Start
 
+**Default Configuration:**
+- Default Domain: `deploy.wuaze.com`
+- Platform Name: Deployment Platform
+- Max Upload: 50MB
+
+**Setup:**
+
 1. **Access the platform:**
    - Open `deploy.php` in your PHP-enabled web server
    - Default credentials: `admin` / `admin123`
@@ -26,6 +33,7 @@ A powerful PHP-based platform for deploying and managing websites with advanced 
 
 3. **View your deployment:**
    - Click "View" to see your deployed website
+   - Deployment URL: `http://deploy.wuaze.com/deployments/site-name/`
    - Use File Manager for advanced file operations
 
 ### 📖 Documentation

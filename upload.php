@@ -170,6 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['files'])) {
 function createDefaultIndex($deploymentPath, $deploymentId) {
     $files = array_diff(scandir($deploymentPath), ['.', '..']);
     
+    // Get the base URL for the back link
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+    $baseDomain = $_SERVER['HTTP_HOST'];
+    $backUrl = $protocol . $baseDomain . '/deploy.php';
+    
     $html = '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -296,7 +301,7 @@ function createDefaultIndex($deploymentPath, $deploymentId) {
 </head>
 <body>
     <div class="container">
-        <a href="../../deploy.php" class="back-link">
+        <a href="' . $backUrl . '" class="back-link">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
         

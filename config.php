@@ -12,12 +12,12 @@ define('DB_PASS', 'your_db_pass'); // Change to your database password
 define('DB_NAME', 'your_db_name'); // Change to your database name
 
 // Platform Configuration
-define('PLATFORM_NAME', 'Kios Murah Deployment');
+define('PLATFORM_NAME', 'Deployment Platform');
 define('PLATFORM_LOGO', 'assets/logo.png'); // Path to platform logo
 define('PLATFORM_FAVICON', 'assets/favicon.ico');
 
 // Domain Configuration
-define('BASE_DOMAIN', 'kiosmurah.me'); // Your main domain
+define('BASE_DOMAIN', 'deploy.wuaze.com'); // Your main domain
 define('USE_SUBDOMAIN', false); // Set to true for subdomain deployments (deploy.kiosmurah.me)
 define('DEPLOYMENT_URL_PREFIX', '/deployments/'); // URL prefix for deployments
 

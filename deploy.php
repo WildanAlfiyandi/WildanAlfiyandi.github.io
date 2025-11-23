@@ -718,7 +718,13 @@ $username = $_SESSION['user'] ?? 'Guest';
                                     <p><i class="fas fa-hdd"></i> <?php echo number_format($deployment['size'] / 1024, 2); ?> KB</p>
                                 </div>
                                 <div class="deployment-actions">
-                                    <a href="deployments/<?php echo urlencode($deployment['id']); ?>/" target="_blank" class="btn btn-info">
+                                    <?php
+                                    // Generate proper deployment URL
+                                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                                    $baseDomain = $settings['base_domain'] ?? $_SERVER['HTTP_HOST'];
+                                    $deploymentUrl = $protocol . $baseDomain . '/deployments/' . urlencode($deployment['id']) . '/';
+                                    ?>
+                                    <a href="<?php echo htmlspecialchars($deploymentUrl); ?>" target="_blank" class="btn btn-info">
                                         <i class="fas fa-eye"></i> View
                                     </a>
                                     <a href="?delete=<?php echo $index; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this deployment?')">
