@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class SplashActivity extends Activity {
-    private static final int SPLASH_DURATION = 3000; // 3 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +38,6 @@ public class SplashActivity extends Activity {
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
             }
-        }, SPLASH_DURATION);
+        }, Constants.SPLASH_DURATION_MS);
     }
 }

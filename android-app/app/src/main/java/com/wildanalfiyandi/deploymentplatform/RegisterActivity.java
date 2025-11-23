@@ -53,8 +53,9 @@ public class RegisterActivity extends Activity {
         }
 
         // Mock sending verification code - in production, this would call a backend API
+        // TODO: Replace with real email verification service (SendGrid, Mailgun, etc.)
         Toast.makeText(this, "Kode verifikasi telah dikirim ke " + email, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Kode demo: 123456", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Kode demo: " + Constants.MOCK_VERIFICATION_CODE, Toast.LENGTH_LONG).show();
         
         codeSent = true;
         verificationSection.setVisibility(View.VISIBLE);
@@ -84,7 +85,9 @@ public class RegisterActivity extends Activity {
             return;
         }
 
-        if (!code.equals("123456")) {
+        // Mock verification - in production, verify with backend
+        // TODO: Replace with real backend verification
+        if (!code.equals(Constants.MOCK_VERIFICATION_CODE)) {
             Toast.makeText(this, "Kode verifikasi salah", Toast.LENGTH_SHORT).show();
             return;
         }

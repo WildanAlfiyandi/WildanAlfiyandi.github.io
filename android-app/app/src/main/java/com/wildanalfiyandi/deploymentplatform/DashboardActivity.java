@@ -31,16 +31,16 @@ public class DashboardActivity extends Activity {
 
         // Set welcome message
         String welcomeMessage = "Selamat Datang!";
-        if (userType.equals("admin")) {
+        if (userType.equals(Constants.USER_TYPE_ADMIN)) {
             welcomeMessage = "Selamat Datang, Admin!";
             adminPanelButton.setVisibility(View.VISIBLE);
-        } else if (userType.equals("guest")) {
+        } else if (userType.equals(Constants.USER_TYPE_GUEST)) {
             welcomeMessage = "Selamat Datang, Guest!";
         }
         welcomeText.setText(welcomeMessage);
 
         // Mock balance
-        balanceText.setText("Rp 1.500.000");
+        balanceText.setText(Constants.MOCK_BALANCE);
 
         // Set click listeners
         adminPanelButton.setOnClickListener(new View.OnClickListener() {

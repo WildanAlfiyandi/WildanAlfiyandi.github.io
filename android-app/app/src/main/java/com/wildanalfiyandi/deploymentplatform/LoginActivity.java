@@ -86,39 +86,42 @@ public class LoginActivity extends Activity {
         }
 
         // Mock authentication - in production, this would call a backend API
-        if (email.equals("admin@example.com") && password.equals("admin123")) {
-            navigateToDashboard("admin");
+        // TODO: Replace with real API call to authentication service
+        if (email.equals(Constants.MOCK_ADMIN_EMAIL) && password.equals(Constants.MOCK_ADMIN_PASSWORD)) {
+            navigateToDashboard(Constants.USER_TYPE_ADMIN);
         } else {
-            navigateToDashboard("user");
+            navigateToDashboard(Constants.USER_TYPE_USER);
         }
     }
 
     private void handleGoogleLogin() {
         // Mock Google login - in production, this would use Firebase Auth or Google Sign-In
+        // TODO: Implement real Google OAuth integration
         Toast.makeText(this, "Google login (memerlukan konfigurasi OAuth)", Toast.LENGTH_SHORT).show();
         // For demo purposes, proceed to dashboard
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                navigateToDashboard("user");
+                navigateToDashboard(Constants.USER_TYPE_USER);
             }
         }, 1000);
     }
 
     private void handleFacebookLogin() {
         // Mock Facebook login - in production, this would use Facebook SDK
+        // TODO: Implement real Facebook SDK integration
         Toast.makeText(this, "Facebook login (memerlukan konfigurasi Facebook SDK)", Toast.LENGTH_SHORT).show();
         // For demo purposes, proceed to dashboard
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                navigateToDashboard("user");
+                navigateToDashboard(Constants.USER_TYPE_USER);
             }
         }, 1000);
     }
 
     private void handleGuestLogin() {
-        navigateToDashboard("guest");
+        navigateToDashboard(Constants.USER_TYPE_GUEST);
     }
 
     private void navigateToDashboard(String userType) {
