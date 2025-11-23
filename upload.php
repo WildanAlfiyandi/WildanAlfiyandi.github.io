@@ -30,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['files'])) {
     $deploymentId = 'deploy-' . uniqid() . '-' . time();
     $deploymentPath = DEPLOYMENTS_DIR . $deploymentId;
     
-    // Create deployment directory
+    // Create deployment directory with restrictive permissions
     if (!is_dir($deploymentPath)) {
-        mkdir($deploymentPath, 0755, true);
+        mkdir($deploymentPath, 0750, true);
     }
     
     // Process each uploaded file
@@ -62,8 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['files'])) {
             continue;
         }
         
-        // Security: Sanitize filename
-        $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $fileName);
+        // Security: Sanitize filename while preserving spaces and common characters
+        $fileName = preg_replace('/[^a-zA-Z0-9._\- ]/', '', $fileName);
+        $fileName = preg_replace('/\s+/', '_', $fileName); // Replace spaces with underscores
         $destinationPath = $deploymentPath . '/' . $fileName;
         
         // Check if it's a ZIP file and extract it
@@ -295,7 +296,7 @@ function createDefaultIndex($deploymentPath, $deploymentId) {
 </head>
 <body>
     <div class="container">
-        <a href="../deploy.php" class="back-link">
+        <a href="../../deploy.php" class="back-link">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
         

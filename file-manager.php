@@ -6,6 +6,11 @@
 
 session_start();
 
+// Generate CSRF token if not exists
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Check if user is logged in
 if (!isset($_SESSION['user'])) {
     header('Location: deploy.php');
@@ -34,32 +39,43 @@ if (!is_dir($deploymentPath)) {
 $message = '';
 $messageType = '';
 
-// Delete file
-if (isset($_GET['delete'])) {
-    $file = basename($_GET['delete']);
-    $filePath = $deploymentPath . '/' . $file;
-    if (file_exists($filePath) && is_file($filePath)) {
-        unlink($filePath);
-        $message = "File deleted successfully!";
-        $messageType = "success";
+// Delete file with CSRF protection
+if (isset($_POST['delete']) && isset($_POST['csrf_token'])) {
+    if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
+        $file = basename($_POST['delete']);
+        $filePath = $deploymentPath . '/' . $file;
+        if (file_exists($filePath) && is_file($filePath)) {
+            unlink($filePath);
+            $message = "File deleted successfully!";
+            $messageType = "success";
+        }
+    } else {
+        $message = "Invalid security token!";
+        $messageType = "error";
     }
 }
 
 // Upload new file to deployment
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newFile'])) {
-    $file = $_FILES['newFile'];
-    if ($file['error'] === UPLOAD_ERR_OK) {
-        $fileName = basename($file['name']);
-        $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $fileName);
-        $destinationPath = $deploymentPath . '/' . $fileName;
-        
-        if (move_uploaded_file($file['tmp_name'], $destinationPath)) {
-            $message = "File uploaded successfully!";
-            $messageType = "success";
-        } else {
-            $message = "Failed to upload file!";
-            $messageType = "error";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newFile']) && isset($_POST['csrf_token'])) {
+    if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
+        $file = $_FILES['newFile'];
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $fileName = basename($file['name']);
+            $fileName = preg_replace('/[^a-zA-Z0-9._\- ]/', '', $fileName);
+            $fileName = preg_replace('/\s+/', '_', $fileName);
+            $destinationPath = $deploymentPath . '/' . $fileName;
+            
+            if (move_uploaded_file($file['tmp_name'], $destinationPath)) {
+                $message = "File uploaded successfully!";
+                $messageType = "success";
+            } else {
+                $message = "Failed to upload file!";
+                $messageType = "error";
+            }
         }
+    } else {
+        $message = "Invalid security token!";
+        $messageType = "error";
     }
 }
 
@@ -185,6 +201,16 @@ $files = getDirectoryFiles($deploymentPath);
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Inline form styling for delete buttons */
+        form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        form button {
+            margin: 0;
         }
 
         .card {
@@ -380,9 +406,19 @@ $files = getDirectoryFiles($deploymentPath);
                 <div class="stat-box">
                     <h3><?php 
                         $totalSize = 0;
-                        array_walk_recursive($files, function($item) use (&$totalSize) {
-                            if (isset($item['size'])) $totalSize += $item['size'];
-                        });
+                        function calculateSize($items) {
+                            $size = 0;
+                            foreach ($items as $item) {
+                                if (isset($item['size'])) {
+                                    $size += $item['size'];
+                                }
+                                if (isset($item['children']) && is_array($item['children'])) {
+                                    $size += calculateSize($item['children']);
+                                }
+                            }
+                            return $size;
+                        }
+                        $totalSize = calculateSize($files);
                         echo number_format($totalSize / 1024, 2);
                     ?> KB</h3>
                     <p><i class="fas fa-hdd"></i> Total Size</p>
@@ -397,6 +433,7 @@ $files = getDirectoryFiles($deploymentPath);
             <div class="upload-section">
                 <h3><i class="fas fa-cloud-upload-alt"></i> Upload New File</h3>
                 <form action="" method="POST" enctype="multipart/form-data" class="upload-form">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="file" name="newFile" required>
                     <button type="submit" class="btn btn-success">
                         <i class="fas fa-upload"></i> Upload
@@ -470,9 +507,13 @@ $files = getDirectoryFiles($deploymentPath);
                                             <a href="deployments/<?php echo urlencode($deploymentId); ?>/<?php echo urlencode($file['name']); ?>" target="_blank" class="btn btn-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
-                                            <a href="?id=<?php echo urlencode($deploymentId); ?>&delete=<?php echo urlencode($file['name']); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this file?')">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </a>
+                                            <form action="" method="POST" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                                                <input type="hidden" name="delete" value="<?php echo htmlspecialchars($file['name']); ?>">
+                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this file?')">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 <?php endif; ?>

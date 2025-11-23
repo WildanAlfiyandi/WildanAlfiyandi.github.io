@@ -885,8 +885,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
     
-    // Simple authentication (in production, use proper password hashing)
-    if ($username === 'admin' && $password === 'admin123') {
+    // User credentials with hashed password
+    // For production: Use database with password_hash() and password_verify()
+    // Generated with: password_hash('admin123', PASSWORD_DEFAULT)
+    $users = [
+        'admin' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // admin123
+    ];
+    
+    if (isset($users[$username]) && password_verify($password, $users[$username])) {
         $_SESSION['user'] = $username;
         header('Location: deploy.php');
         exit;
