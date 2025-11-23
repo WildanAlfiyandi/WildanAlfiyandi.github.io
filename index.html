@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Deployment Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="login-box">
+                <h1>🚀 Website Deployment Platform</h1>
+                <p class="subtitle">Admin Panel - Login Required</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                <div class="demo-credentials">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <p>Username: <code>admin</code></p>
+                    <p>Password: <code>admin123</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboardPage" class="page">
+        <nav class="navbar">
+            <div class="container">
+                <h2>🚀 Deployment Dashboard</h2>
+                <div class="nav-right">
+                    <span id="userDisplay"></span>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="dashboard-content">
+                <!-- Upload Section -->
+                <section class="card">
+                    <h3>📁 Upload Website Files</h3>
+                    <p>Upload your website files (HTML, CSS, JS, images, etc.)</p>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📤</div>
+                        <p>Drag & drop files here or click to browse</p>
+                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                        <button class="btn btn-primary" id="browseBtn">Browse Files</button>
+                    </div>
+
+                    <div id="fileList" class="file-list"></div>
+                </section>
+
+                <!-- Deployment Section -->
+                <section class="card" id="deploySection" style="display: none;">
+                    <h3>🚀 Deploy Your Website</h3>
+                    <div class="deploy-info">
+                        <p><strong>Ready to deploy:</strong> <span id="fileCount">0</span> files uploaded</p>
+                        <p>Click the button below to start the deployment process.</p>
+                    </div>
+                    <button class="btn btn-success btn-large" id="deployBtn">Start Deploy</button>
+                    
+                    <div id="deployProgress" class="deploy-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="deployStatus">Initializing deployment...</p>
+                    </div>
+
+                    <div id="deployResult" class="deploy-result" style="display: none;">
+                        <h4>✅ Deployment Successful!</h4>
+                        <p>Your website has been deployed successfully.</p>
+                        <div class="deployed-link">
+                            <label>Website URL:</label>
+                            <a id="websiteLink" href="#" target="_blank" class="website-link"></a>
+                        </div>
+                        <button class="btn btn-primary" id="newDeployBtn">Deploy Another Website</button>
+                    </div>
+                </section>
+
+                <!-- Deployment History -->
+                <section class="card">
+                    <h3>📜 Deployment History</h3>
+                    <div id="historyList" class="history-list">
+                        <p class="empty-state">No deployments yet. Upload files and deploy your first website!</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
