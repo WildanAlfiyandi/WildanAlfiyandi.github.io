@@ -369,12 +369,12 @@ function verifyCustomDomain() {
     const domain = customDomain.value.trim();
     
     if (!domain) {
-        alert('⚠️ Please enter a domain name');
+        showNotification('⚠️ Please enter a domain name', 'warning');
         return;
     }
     
     // Simulate domain verification
-    alert(`✅ Domain "${domain}" verified successfully!\n\nConfigure your DNS:\nType: CNAME\nName: ${domain}\nValue: kiosmurah.me`);
+    showNotification(`✅ Domain "${domain}" verified successfully! Configure your DNS: Type: CNAME, Name: ${domain}, Value: kiosmurah.me`, 'success');
 }
 
 // Start Deployment
@@ -434,7 +434,7 @@ async function startDeployment() {
         renderHistory();
         
         if (notificationsToggle && notificationsToggle.checked) {
-            showNotification('Deployment successful! 🎉');
+            showNotification('Deployment successful! 🎉', 'success');
         }
     }, 500);
 }
@@ -458,7 +458,7 @@ function copyDeploymentUrl() {
         setTimeout(() => {
             copyUrlBtn.innerHTML = originalHtml;
         }, 2000);
-        showNotification('URL copied to clipboard! 📋');
+        showNotification('URL copied to clipboard! 📋', 'success');
     });
 }
 
@@ -541,12 +541,13 @@ function renderHistory() {
 }
 
 function clearHistory() {
-    if (confirm('Are you sure you want to clear all deployment history?')) {
+    const confirmed = window.confirm('Are you sure you want to clear all deployment history?');
+    if (confirmed) {
         deploymentHistory = [];
         saveDeploymentHistory();
         renderHistory();
         updateStats();
-        showNotification('History cleared! 🗑️');
+        showNotification('History cleared! 🗑️', 'info');
     }
 }
 
@@ -572,10 +573,10 @@ function updateStats() {
     if (totalSize) totalSize.textContent = formatFileSize(stats.total_size);
 }
 
-// Show notification
-function showNotification(message) {
-    // Simple notification - could be enhanced with a toast library
-    console.log('📢 ' + message);
+// Show notification - Simple console-based for now (can be enhanced with toast UI)
+function showNotification(message, type = 'info') {
+    console.log(`📢 [${type.toUpperCase()}] ${message}`);
+    // Future enhancement: Implement toast notification UI
 }
 
 // Initialize app
