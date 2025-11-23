@@ -6,13 +6,24 @@
 
 session_start();
 
-// Configuration
-define('DEPLOYMENTS_DIR', __DIR__ . '/deployments/');
-define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB
-define('ALLOWED_EXTENSIONS', ['html', 'htm', 'css', 'js', 'php', 'json', 'xml', 'txt', 'md', 
-                              'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'ico', 
-                              'woff', 'woff2', 'ttf', 'eot', 'otf',
-                              'pdf', 'zip', 'rar', '7z']);
+// Load configuration
+if (file_exists(__DIR__ . '/config.php')) {
+    require_once __DIR__ . '/config.php';
+    $settings = getSettings();
+} else {
+    // Fallback configuration
+    define('DEPLOYMENTS_DIR', __DIR__ . '/deployments/');
+    define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB
+    define('ALLOWED_EXTENSIONS', ['html', 'htm', 'css', 'js', 'php', 'json', 'xml', 'txt', 'md', 
+                                  'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'ico', 
+                                  'woff', 'woff2', 'ttf', 'eot', 'otf',
+                                  'pdf', 'zip', 'rar', '7z']);
+    $settings = [
+        'platform_name' => 'Professional Deployment Platform',
+        'base_domain' => 'localhost',
+        'theme' => 'purple'
+    ];
+}
 
 // Create deployments directory if not exists
 if (!file_exists(DEPLOYMENTS_DIR)) {
@@ -33,7 +44,7 @@ $username = $_SESSION['user'] ?? 'Guest';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Deployment Platform - PHP Edition</title>
+    <title><?php echo htmlspecialchars($settings['platform_name'] ?? 'Professional Deployment Platform'); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -588,9 +599,14 @@ $username = $_SESSION['user'] ?? 'Guest';
                         <i class="fas fa-user-circle"></i>
                         <strong>Logged in as: <?php echo htmlspecialchars($username); ?></strong>
                     </div>
-                    <a href="?logout=1" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="settings.php" class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="?logout=1" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </div>
 
