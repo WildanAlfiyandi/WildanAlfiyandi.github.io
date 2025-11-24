@@ -1,0 +1,16 @@
+{
+  "name": "admin-deploy-server",
+  "version": "1.0.0",
+  "description": "Simple server to accept ZIP upload and commit files to GitHub repository",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.9",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "@octokit/rest": "^19.0.7",
+    "dotenv": "^16.3.1"
+  }
+}
