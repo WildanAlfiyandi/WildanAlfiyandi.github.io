@@ -2,7 +2,7 @@
   "name": "SMM Panel - Social Media Marketing",
   "short_name": "SMM Panel",
   "description": "Professional Social Media Marketing Platform with Admin Panel",
-  "start_url": "/smm-panel.html",
+  "start_url": "smm-panel.html",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#6366f1",

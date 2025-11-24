@@ -463,21 +463,47 @@ function refreshData() {
 }
 
 function showNotification(message, type = 'info') {
-    // Simple notification (can be enhanced)
-    console.log(`[${type.toUpperCase()}] ${message}`);
+    // Create toast notification element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--success)' : 'var(--info)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
 function viewOrder(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (order) {
-        alert(`Order Details:\n\nID: #${order.id}\nService: ${order.service}\nQuantity: ${order.quantity}\nStatus: ${order.status}\nAmount: $${order.amount}`);
+        // Create a better UI for order details instead of alert
+        showNotification(`Order #${order.id}: ${order.service} - ${order.status}`, 'info');
+        // In a production app, this would open a modal with full details
     }
 }
 
 function viewUser(userId) {
     const user = users.find(u => u.id === userId);
     if (user) {
-        alert(`User Details:\n\nID: #${user.id}\nName: ${user.name}\nEmail: ${user.email}\nBalance: $${user.balance}\nOrders: ${user.orders}`);
+        // Create a better UI for user details instead of alert
+        showNotification(`User: ${user.name} - Balance: $${user.balance}`, 'info');
+        // In a production app, this would open a modal with full details
     }
 }
 
