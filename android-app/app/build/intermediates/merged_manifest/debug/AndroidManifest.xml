@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wildanalfiyandi.deploymentplatform"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="34" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <permission
+        android:name="com.wildanalfiyandi.deploymentplatform.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.wildanalfiyandi.deploymentplatform.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+
+    <application
+        android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:debuggable="true"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+
+        <!-- Splash Screen - Entry Point -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.SplashActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Login Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.LoginActivity"
+            android:exported="false"
+            android:label="Login"
+            android:theme="@style/AppTheme" />
+
+        <!-- Register Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.RegisterActivity"
+            android:exported="false"
+            android:label="Register"
+            android:theme="@style/AppTheme" />
+
+        <!-- Dashboard Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.DashboardActivity"
+            android:exported="false"
+            android:label="Dashboard"
+            android:theme="@style/AppTheme" />
+
+        <!-- Payment Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.PaymentActivity"
+            android:exported="false"
+            android:label="Payment"
+            android:theme="@style/AppTheme" />
+
+        <!-- Admin Panel Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.AdminPanelActivity"
+            android:exported="false"
+            android:label="Admin Panel"
+            android:theme="@style/AppTheme" />
+
+        <!-- Original WebView Activity -->
+        <activity
+            android:name="com.wildanalfiyandi.deploymentplatform.MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.wildanalfiyandi.deploymentplatform.androidx-startup"
+            android:exported="false" >
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
+
+</manifest>

@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_splash.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/anim_slide_out_left.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/anim/slide_out_left.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_payment.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_payment.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_login.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/anim_fade_in.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/anim/fade_in.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_dashboard.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_dashboard.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_main.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_register.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_register.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/anim_slide_in_right.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/anim/slide_in_right.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/layout_activity_admin_panel.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/layout/activity_admin_panel.xml"
+    },
+    {
+        "merged": "com.wildanalfiyandi.deploymentplatform.app-merged_res-29:/anim_slide_up.xml.flat",
+        "source": "com.wildanalfiyandi.deploymentplatform.app-main-31:/anim/slide_up.xml"
+    }
+]

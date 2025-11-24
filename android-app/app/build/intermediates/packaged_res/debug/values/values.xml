@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admin_panel_title">Admin Panel</string>
+    <string name="app_name">Digital Platform</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="login_title">Login</string>
+    <string name="payment_title">Payment</string>
+    <string name="register_title">Register</string>
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+</resources>
