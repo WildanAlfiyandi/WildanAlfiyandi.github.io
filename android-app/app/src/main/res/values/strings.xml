@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Digital Platform</string>
+    <string name="login_title">Login</string>
+    <string name="register_title">Register</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="admin_panel_title">Admin Panel</string>
+    <string name="payment_title">Payment</string>
+</resources>

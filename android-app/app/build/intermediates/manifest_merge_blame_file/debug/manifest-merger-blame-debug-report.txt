@@ -1,0 +1,165 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.wildanalfiyandi.deploymentplatform"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="34" />
+9-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:5:5-67
+11-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:6:5-79
+12-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:6:22-76
+13
+14    <permission
+14-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+15        android:name="com.wildanalfiyandi.deploymentplatform.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+15-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+16        android:protectionLevel="signature" />
+16-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+17
+18    <uses-permission android:name="com.wildanalfiyandi.deploymentplatform.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+18-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+18-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+19
+20    <application
+20-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:8:5-69:19
+21        android:allowBackup="true"
+21-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:9:9-35
+22        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+22-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-3/c4781ed071f4df465d69e7b9ecfecdd8/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+23        android:debuggable="true"
+24        android:icon="@android:drawable/sym_def_app_icon"
+24-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:10:9-58
+25        android:label="@string/app_name"
+25-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:11:9-41
+26        android:supportsRtl="true"
+26-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:12:9-35
+27        android:theme="@style/AppTheme" >
+27-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:13:9-40
+28
+29        <!-- Splash Screen - Entry Point -->
+30        <activity
+30-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:16:9-25:20
+31            android:name="com.wildanalfiyandi.deploymentplatform.SplashActivity"
+31-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:17:13-43
+32            android:exported="true"
+32-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:20:13-36
+33            android:label="@string/app_name"
+33-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:18:13-45
+34            android:theme="@style/AppTheme" >
+34-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:19:13-44
+35            <intent-filter>
+35-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:21:13-24:29
+36                <action android:name="android.intent.action.MAIN" />
+36-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:22:17-69
+36-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:22:25-66
+37
+38                <category android:name="android.intent.category.LAUNCHER" />
+38-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:23:17-77
+38-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:23:27-74
+39            </intent-filter>
+40        </activity>
+41
+42        <!-- Login Activity -->
+43        <activity
+43-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:28:9-32:40
+44            android:name="com.wildanalfiyandi.deploymentplatform.LoginActivity"
+44-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:29:13-42
+45            android:exported="false"
+45-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:32:13-37
+46            android:label="Login"
+46-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:30:13-34
+47            android:theme="@style/AppTheme" />
+47-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:31:13-44
+48
+49        <!-- Register Activity -->
+50        <activity
+50-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:35:9-39:40
+51            android:name="com.wildanalfiyandi.deploymentplatform.RegisterActivity"
+51-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:36:13-45
+52            android:exported="false"
+52-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:39:13-37
+53            android:label="Register"
+53-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:37:13-37
+54            android:theme="@style/AppTheme" />
+54-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:38:13-44
+55
+56        <!-- Dashboard Activity -->
+57        <activity
+57-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:42:9-46:40
+58            android:name="com.wildanalfiyandi.deploymentplatform.DashboardActivity"
+58-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:43:13-46
+59            android:exported="false"
+59-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:46:13-37
+60            android:label="Dashboard"
+60-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:44:13-38
+61            android:theme="@style/AppTheme" />
+61-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:45:13-44
+62
+63        <!-- Payment Activity -->
+64        <activity
+64-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:49:9-53:40
+65            android:name="com.wildanalfiyandi.deploymentplatform.PaymentActivity"
+65-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:50:13-44
+66            android:exported="false"
+66-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:53:13-37
+67            android:label="Payment"
+67-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:51:13-36
+68            android:theme="@style/AppTheme" />
+68-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:52:13-44
+69
+70        <!-- Admin Panel Activity -->
+71        <activity
+71-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:56:9-60:40
+72            android:name="com.wildanalfiyandi.deploymentplatform.AdminPanelActivity"
+72-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:57:13-47
+73            android:exported="false"
+73-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:60:13-37
+74            android:label="Admin Panel"
+74-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:58:13-40
+75            android:theme="@style/AppTheme" />
+75-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:59:13-44
+76
+77        <!-- Original WebView Activity -->
+78        <activity
+78-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:63:9-67:40
+79            android:name="com.wildanalfiyandi.deploymentplatform.MainActivity"
+79-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:64:13-41
+80            android:exported="false"
+80-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:67:13-37
+81            android:label="@string/app_name"
+81-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:65:13-45
+82            android:theme="@style/AppTheme" />
+82-->/workspaces/WildanAlfiyandi.github.io/android-app/app/src/main/AndroidManifest.xml:66:13-44
+83
+84        <provider
+84-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+85            android:name="androidx.startup.InitializationProvider"
+85-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+86            android:authorities="com.wildanalfiyandi.deploymentplatform.androidx-startup"
+86-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+87            android:exported="false" >
+87-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+88            <meta-data
+88-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+89                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+89-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+90                android:value="androidx.startup" />
+90-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-3/979df2d65355c07838f37ddd6cec9d56/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+91            <meta-data
+91-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-3/0ed39ac97ff44e60652e6797b1fded6f/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+92                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+92-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-3/0ed39ac97ff44e60652e6797b1fded6f/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+93                android:value="androidx.startup" />
+93-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-3/0ed39ac97ff44e60652e6797b1fded6f/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+94        </provider>
+95    </application>
+96
+97</manifest>

@@ -6,6 +6,7 @@
     <title>Professional Deployment Platform - Admin Panel</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
     <!-- Animated Background -->
@@ -46,6 +47,25 @@
                     </button>
                     <div id="loginError" class="error-message"></div>
                 </form>
+                <div class="create-admin">
+                    <p class="small-note">Belum punya akun admin? <button id="createAdminBtn" class="btn btn-sm btn-secondary">Buat Akun Admin</button></p>
+                    <form id="createAdminForm" style="display:none; margin-top:16px;">
+                        <div class="form-group">
+                            <div class="input-icon">
+                                <i class="fas fa-user-shield"></i>
+                                <input type="text" id="newAdminUsername" placeholder="Admin username" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="newAdminPassword" placeholder="Password" required>
+                            </div>
+                        </div>
+                        <button id="saveAdminBtn" class="btn btn-primary">Create Admin</button>
+                        <div id="createAdminMsg" class="error-message" style="display:none;margin-top:12px;"></div>
+                    </form>
+                </div>
                 <div class="demo-credentials">
                     <div class="credentials-header">
                         <i class="fas fa-info-circle"></i>
@@ -141,10 +161,15 @@
                         </div>
                         <p>Drag & drop files here or click to browse</p>
                         <p class="upload-hint">All file types supported including PHP, HTML, CSS, JS, images, etc.</p>
-                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                        <input type="file" id="fileInput" multiple webkitdirectory directory accept="*/*" style="display: none;">
                         <button class="btn btn-primary btn-gradient" id="browseBtn">
                             <i class="fas fa-folder-open"></i> Browse Files
                         </button>
+                    </div>
+
+                    <div style="margin-top:12px; display:flex; gap:8px;">
+                        <button id="serverDeployBtn" class="btn btn-success btn-sm" style="display:none;"> <i class="fas fa-cloud-upload-alt"></i> Deploy via Server</button>
+                        <button id="githubDeployHint" class="btn btn-secondary btn-sm" style="display:none;"> <i class="fas fa-code-branch"></i> Deploy to GitHub (if configured)</button>
                     </div>
 
                     <div id="fileList" class="file-list"></div>
@@ -292,6 +317,34 @@
                     </div>
                 </div>
                 <div class="settings-section">
+                    <h4><i class="fas fa-code-branch"></i> GitHub Deploy Settings</h4>
+                    <p class="small-note">(Optional) Configure GitHub token & repo to enable direct deploy from Admin. Token is stored in browser localStorage — do not share it.</p>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <input id="githubToken" type="password" placeholder="GitHub Personal Access Token (repo scope)" />
+                        <input id="githubOwner" type="text" placeholder="GitHub owner (username or org)" />
+                        <input id="githubRepo" type="text" placeholder="Repository name (e.g. mysite.github.io)" />
+                        <input id="githubBranch" type="text" placeholder="Target branch (default: main)" />
+                        <div style="display:flex;gap:8px;">
+                            <button id="saveGithubConfig" class="btn btn-primary btn-sm">Save GitHub Config</button>
+                            <button id="clearGithubConfig" class="btn btn-secondary btn-sm">Clear</button>
+                        </div>
+                        <div id="githubConfigMsg" class="error-message" style="display:none;margin-top:8px;"></div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4><i class="fas fa-server"></i> Server Deploy Endpoint</h4>
+                    <p class="small-note">Optional: enter a server URL to receive ZIP uploads (recommended: deploy server with secure token).</p>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <input id="serverDeployEndpoint" type="text" placeholder="https://your-server.com/deploy" />
+                        <input id="serverDeployToken" type="password" placeholder="Server deploy token (optional)" />
+                        <div style="display:flex;gap:8px;">
+                            <button id="saveServerConfig" class="btn btn-primary btn-sm">Save Server Config</button>
+                            <button id="clearServerConfig" class="btn btn-secondary btn-sm">Clear</button>
+                        </div>
+                        <div id="serverConfigMsg" class="error-message" style="display:none;margin-top:8px;"></div>
+                    </div>
+                </div>
+                <div class="settings-section">
                     <h4><i class="fas fa-bell"></i> Notifications</h4>
                     <label class="switch">
                         <input type="checkbox" id="notificationsToggle" checked>
@@ -310,5 +363,7 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>

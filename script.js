@@ -13,6 +13,9 @@ let stats = {
     total_files: 0,
     total_size: 0
 };
+// Storage keys
+const ADMIN_KEY = 'site_admin_account';
+const GITHUB_CONFIG_KEY = 'github_deploy_config';
 
 // DOM Elements - Login
 const loginPage = document.getElementById('loginPage');
@@ -106,6 +109,8 @@ function init() {
     loadDeploymentHistory();
     loadStats();
     setupEventListeners();
+        loadAdminUIState();
+        loadGithubConfigUI();
 }
 
 // Setup all event listeners
@@ -143,6 +148,86 @@ function setupEventListeners() {
             localStorage.setItem('theme', theme);
         });
     });
+
+    // GitHub config buttons in Settings modal
+    const saveGithubConfig = document.getElementById('saveGithubConfig');
+    const clearGithubConfig = document.getElementById('clearGithubConfig');
+    const githubConfigMsg = document.getElementById('githubConfigMsg');
+
+    if (saveGithubConfig) {
+        saveGithubConfig.addEventListener('click', (e) => {
+            e.preventDefault();
+            githubConfigMsg.style.display = 'block';
+            const cfg = {
+                token: document.getElementById('githubToken').value.trim(),
+                owner: document.getElementById('githubOwner').value.trim(),
+                repo: document.getElementById('githubRepo').value.trim(),
+                branch: document.getElementById('githubBranch').value.trim() || 'main'
+            };
+            if (!cfg.token || !cfg.owner || !cfg.repo) {
+                githubConfigMsg.textContent = 'Please fill token, owner and repo.';
+                return;
+            }
+            localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(cfg));
+            githubConfigMsg.textContent = 'GitHub config saved in browser storage.';
+            setTimeout(() => { githubConfigMsg.style.display = 'none'; }, 2500);
+        });
+    }
+
+    if (clearGithubConfig) {
+        clearGithubConfig.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem(GITHUB_CONFIG_KEY);
+            if (githubConfigMsg) {
+                githubConfigMsg.style.display = 'block';
+                githubConfigMsg.textContent = 'GitHub config cleared.';
+                setTimeout(() => { githubConfigMsg.style.display = 'none'; }, 2000);
+            }
+            const t = document.getElementById('githubToken'); if (t) t.value = '';
+            const o = document.getElementById('githubOwner'); if (o) o.value = '';
+            const r = document.getElementById('githubRepo'); if (r) r.value = '';
+            const b = document.getElementById('githubBranch'); if (b) b.value = '';
+        });
+    }
+
+    // Server deploy config
+    const saveServerConfig = document.getElementById('saveServerConfig');
+    const clearServerConfig = document.getElementById('clearServerConfig');
+    const serverConfigMsg = document.getElementById('serverConfigMsg');
+
+    if (saveServerConfig) {
+        saveServerConfig.addEventListener('click', (e) => {
+            e.preventDefault();
+            serverConfigMsg.style.display = 'block';
+            const cfg = {
+                endpoint: document.getElementById('serverDeployEndpoint').value.trim(),
+                token: document.getElementById('serverDeployToken').value.trim()
+            };
+            if (!cfg.endpoint) {
+                serverConfigMsg.textContent = 'Please provide server endpoint URL.';
+                return;
+            }
+            localStorage.setItem('server_deploy_config', JSON.stringify(cfg));
+            serverConfigMsg.textContent = 'Server deploy config saved.';
+            setTimeout(() => { serverConfigMsg.style.display = 'none'; }, 2000);
+            updateDeployButtonsVisibility();
+        });
+    }
+
+    if (clearServerConfig) {
+        clearServerConfig.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('server_deploy_config');
+            if (serverConfigMsg) {
+                serverConfigMsg.style.display = 'block';
+                serverConfigMsg.textContent = 'Server config cleared.';
+                setTimeout(() => { serverConfigMsg.style.display = 'none'; }, 2000);
+            }
+            const ep = document.getElementById('serverDeployEndpoint'); if (ep) ep.value = '';
+            const tok = document.getElementById('serverDeployToken'); if (tok) tok.value = '';
+            updateDeployButtonsVisibility();
+        });
+    }
 
     // File upload
     if (browseBtn) {
@@ -204,6 +289,14 @@ function setupEventListeners() {
         deployBtn.addEventListener('click', startDeployment);
     }
 
+    const serverDeployBtn = document.getElementById('serverDeployBtn');
+    if (serverDeployBtn) {
+        serverDeployBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await deployViaServer();
+        });
+    }
+
     if (newDeployBtn) {
         newDeployBtn.addEventListener('click', resetForNewDeployment);
     }
@@ -224,6 +317,29 @@ function handleLogin(e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    // Check for saved admin account first
+    const adminRaw = localStorage.getItem(ADMIN_KEY);
+    if (adminRaw) {
+        try {
+            const admin = JSON.parse(adminRaw);
+            verifyPassword(password, admin.salt, admin.passwordHash).then(valid => {
+                if (valid && username === admin.username) {
+                    currentUser = username;
+                    localStorage.setItem('currentUser', username);
+                    loginError.classList.remove('show');
+                    showDashboard();
+                } else {
+                    loginError.textContent = '❌ Invalid username or password!';
+                    loginError.classList.add('show');
+                }
+            });
+            return;
+        } catch (err) {
+            console.error('Admin parse error', err);
+        }
+    }
+
+    // Fallback to demo users
     if (users[username] && users[username] === password) {
         currentUser = username;
         localStorage.setItem('currentUser', username);
@@ -233,6 +349,205 @@ function handleLogin(e) {
         loginError.textContent = '❌ Invalid username or password!';
         loginError.classList.add('show');
     }
+}
+
+// Admin account utilities
+async function createAdminAccount(username, password) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
+    const passwordHash = await hashPassword(password, saltHex);
+    const admin = { username, passwordHash, salt: saltHex };
+    localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
+}
+
+async function hashPassword(password, saltHex) {
+    const enc = new TextEncoder();
+    const data = enc.encode(saltHex + password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyPassword(password, saltHex, expectedHash) {
+    const h = await hashPassword(password, saltHex);
+    return h === expectedHash;
+}
+
+function loadAdminUIState() {
+    const adminRaw = localStorage.getItem(ADMIN_KEY);
+    const createAdminForm = document.getElementById('createAdminForm');
+    if (adminRaw && createAdminForm) {
+        // If admin already exists, hide the create form
+        createAdminForm.style.display = 'none';
+        const createAdminBtn = document.getElementById('createAdminBtn');
+        if (createAdminBtn) createAdminBtn.style.display = 'none';
+    }
+}
+
+// GitHub config UI helpers
+function loadGithubConfigUI() {
+    const cfgRaw = localStorage.getItem(GITHUB_CONFIG_KEY);
+    if (!cfgRaw) return;
+    try {
+        const cfg = JSON.parse(cfgRaw);
+        document.getElementById('githubToken').value = cfg.token || '';
+        document.getElementById('githubOwner').value = cfg.owner || '';
+        document.getElementById('githubRepo').value = cfg.repo || '';
+        document.getElementById('githubBranch').value = cfg.branch || '';
+    } catch (err) {
+        console.error('Failed to load GitHub config', err);
+    }
+}
+
+function getGithubConfig() {
+    const raw = localStorage.getItem(GITHUB_CONFIG_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+}
+
+// Convert File object to Base64 string for GitHub API
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const result = reader.result.split(',')[1];
+            resolve(result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Zip files using JSZip and POST to server endpoint
+async function deployViaServer() {
+    const cfgRaw = localStorage.getItem('server_deploy_config');
+    if (!cfgRaw) {
+        showNotification('Server deploy not configured.', 'warning');
+        return;
+    }
+    const cfg = JSON.parse(cfgRaw);
+    if (!cfg.endpoint) {
+        showNotification('Server endpoint missing.', 'warning');
+        return;
+    }
+
+    // Build ZIP
+    const zip = new JSZip();
+    uploadedFiles.forEach(f => {
+        // preserve file.relativePath if available (from directory input)
+        const name = f.file.webkitRelativePath && f.file.webkitRelativePath.length ? f.file.webkitRelativePath : f.name;
+        zip.file(name, f.file);
+    });
+
+    showNotification('Preparing ZIP archive...', 'info');
+    const content = await zip.generateAsync({ type: 'blob' });
+
+    // POST as form-data
+    const form = new FormData();
+    form.append('site', content, 'site.zip');
+    if (cfg.token) form.append('token', cfg.token);
+    // optional metadata
+    form.append('user', currentUser || 'unknown');
+
+    deployProgress.style.display = 'block';
+    deployStatus.innerHTML = '<i class="fas fa-upload"></i> Uploading ZIP to server...';
+
+    try {
+        const resp = await fetch(cfg.endpoint, {
+            method: 'POST',
+            body: form
+        });
+        const json = await resp.json();
+        if (!resp.ok) {
+            throw new Error(json.message || `Server returned ${resp.status}`);
+        }
+        // Expect server to return deployed URL
+        const deployedUrl = json.url || json.deploy_url || json.message;
+        deployProgress.style.display = 'none';
+        deployResult.style.display = 'block';
+        websiteLink.href = deployedUrl || '#';
+        websiteLink.textContent = deployedUrl || 'Deployed (see server response)';
+        showNotification('Server deploy finished.', 'success');
+        // Save history entry
+        const deployment = {
+            id: generateDeploymentId(),
+            url: deployedUrl || 'server-deploy',
+            files: uploadedFiles.length,
+            size: uploadedFiles.reduce((s,f) => s + f.size, 0),
+            timestamp: new Date().toISOString(),
+            user: currentUser,
+            fileTypes: getFileTypes()
+        };
+        deploymentHistory.unshift(deployment);
+        saveDeploymentHistory();
+        renderHistory();
+        updateStats();
+    } catch (err) {
+        deployProgress.style.display = 'none';
+        showNotification('Server deploy failed: ' + err.message, 'danger');
+        console.error(err);
+    }
+}
+
+// Perform GitHub per-file upload using REST API (requires token)
+async function performGithubDeploy(files) {
+    const cfg = getGithubConfig();
+    if (!cfg || !cfg.token || !cfg.owner || !cfg.repo) {
+        console.warn('GitHub config missing');
+        return { success: false, message: 'GitHub not configured' };
+    }
+
+    const token = cfg.token;
+    const owner = cfg.owner;
+    const repo = cfg.repo;
+    const branch = cfg.branch || 'main';
+
+    for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        deployStatus.innerHTML = `<i class="fas fa-upload"></i> Uploading ${f.name} (${i+1}/${files.length})`;
+        const content = await fileToBase64(f.file);
+        const path = f.name;
+
+        // Check if file exists to get sha
+        let sha = null;
+        try {
+            const getResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (getResp.status === 200) {
+                const json = await getResp.json();
+                sha = json.sha;
+            }
+        } catch (err) {
+            console.warn('Check file existence failed', err);
+        }
+
+        // Put file
+        const putBody = {
+            message: `Admin deploy: add/update ${path}`,
+            content: content,
+            branch: branch
+        };
+        if (sha) putBody.sha = sha;
+
+        const putResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(putBody)
+        });
+
+        if (!putResp.ok) {
+            const errText = await putResp.text();
+            console.error('Upload failed', path, putResp.status, errText);
+            return { success: false, message: `Failed to upload ${path}: ${putResp.status}` };
+        }
+
+        // update progress fill
+        const percent = Math.round(((i+1)/files.length) * 100);
+        progressFill.style.width = percent + '%';
+        progressFill.textContent = percent + '%';
+    }
+
+    return { success: true };
 }
 
 // Logout Handler
@@ -362,6 +677,17 @@ function updateDeploySection() {
         deploySection.style.display = 'none';
         if (domainSection) domainSection.style.display = 'none';
     }
+    updateDeployButtonsVisibility();
+}
+
+function updateDeployButtonsVisibility() {
+    const serverCfgRaw = localStorage.getItem('server_deploy_config');
+    const serverBtn = document.getElementById('serverDeployBtn');
+    const ghHint = document.getElementById('githubDeployHint');
+
+    if (serverBtn) serverBtn.style.display = (uploadedFiles.length > 0 && serverCfgRaw) ? 'inline-flex' : 'none';
+    const ghCfg = getGithubConfig();
+    if (ghHint) ghHint.style.display = (uploadedFiles.length > 0 && ghCfg) ? 'inline-flex' : 'none';
 }
 
 // Verify Custom Domain
@@ -410,6 +736,22 @@ async function startDeployment() {
         deploymentUrl = `https://${deploymentId}.kiosmurah.me`;
     }
     
+    // If GitHub config available, try to push files to repo
+    const ghCfg = getGithubConfig();
+    if (ghCfg && ghCfg.token && ghCfg.owner && ghCfg.repo) {
+        deployStatus.innerHTML = '<i class="fas fa-code-branch"></i> Deploying files to GitHub repository...';
+        const result = await performGithubDeploy(uploadedFiles);
+        if (!result.success) {
+            deployProgress.style.display = 'none';
+            deployBtn.disabled = false;
+            deployBtn.innerHTML = '<i class="fas fa-rocket"></i> Start Deploy';
+            showNotification('GitHub deploy failed: ' + result.message, 'danger');
+            return;
+        }
+        deployStatus.innerHTML = '<i class="fas fa-check-circle"></i> GitHub deploy finished.';
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
     // Save deployment
     const deployment = {
         id: generateDeploymentId(),
@@ -575,8 +917,27 @@ function updateStats() {
 
 // Show notification - Simple console-based for now (can be enhanced with toast UI)
 function showNotification(message, type = 'info') {
-    console.log(`📢 [${type.toUpperCase()}] ${message}`);
-    // Future enhancement: Implement toast notification UI
+    // Create visual toast notification
+    try {
+        const container = document.getElementById('toastContainer');
+        if (!container) {
+            console.log(`📢 [${type.toUpperCase()}] ${message}`);
+            return;
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<div class="toast-icon">${type === 'success' ? '✅' : type === 'danger' ? '⛔' : type === 'warning' ? '⚠️' : 'ℹ️'}</div><div class="toast-message">${message}</div>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(12px)';
+            setTimeout(() => { try { container.removeChild(toast); } catch (e){} }, 300);
+        }, 4200);
+    } catch (err) {
+        console.log(`📢 [${type.toUpperCase()}] ${message}`);
+    }
 }
 
 // Initialize app
