@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="SMM Panel - Social Media Marketing Platform">
+    <title>SMM Panel - Social Media Marketing</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SMM Panel">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="smm-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader">
+            <i class="fas fa-rocket fa-3x"></i>
+            <h2>SMM Panel</h2>
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="logo">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h1>SMM Panel</h1>
+                    <p>Social Media Marketing Platform</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                
+                <div class="demo-info">
+                    <p><i class="fas fa-info-circle"></i> <strong>Admin Access:</strong></p>
+                    <p>Username: <code>admin</code></p>
+                    <p>Password: <code>admin2024</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page">
+        <!-- Top Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-rocket"></i>
+                    <span>SMM Panel</span>
+                </div>
+                <div class="nav-menu">
+                    <button class="nav-toggle" id="navToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4 id="userDisplay">Admin</h4>
+                            <span class="badge badge-admin">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="orders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Orders</span>
+                        <span class="badge badge-count">12</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="services">
+                        <i class="fas fa-box"></i>
+                        <span>Services</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="users">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <button class="btn btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Dashboard Section -->
+                <section id="dashboardSection" class="content-section active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-home"></i> Dashboard</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-sm" id="refreshBtn">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card blue">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalOrders">1,247</h3>
+                                <p>Total Orders</p>
+                                <span class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 12.5%
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card green">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalUsers">8,432</h3>
+                                <p>Active Users</p>
+                                <span class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 8.3%
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card purple">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalRevenue">$24,589</h3>
+                                <p>Revenue</p>
+                                <span class="stat-change positive">
+                                    <i class="fas fa-arrow-up"></i> 15.2%
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card orange">
+                            <div class="stat-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalServices">156</h3>
+                                <p>Services</p>
+                                <span class="stat-change">
+                                    <i class="fas fa-minus"></i> 0%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Recent Activity -->
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-line"></i> Order Trends</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-placeholder">
+                                    <canvas id="ordersChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="recent-orders" id="recentOrders">
+                                    <!-- Orders will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Orders Section -->
+                <section id="ordersSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-shopping-cart"></i> Orders Management</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="newOrderBtn">
+                                <i class="fas fa-plus"></i> New Order
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="search-bar">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search orders..." id="searchOrders">
+                            </div>
+                            <div class="filters">
+                                <select id="statusFilter" class="form-select">
+                                    <option value="all">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="processing">Processing</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Service</th>
+                                            <th>Link</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ordersTable">
+                                        <!-- Orders will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section id="servicesSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-box"></i> Services</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="addServiceBtn">
+                                <i class="fas fa-plus"></i> Add Service
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="services-grid" id="servicesGrid">
+                        <!-- Services will be populated here -->
+                    </div>
+                </section>
+
+                <!-- Users Section -->
+                <section id="usersSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-users"></i> Users Management</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="addUserBtn">
+                                <i class="fas fa-user-plus"></i> Add User
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="search-bar">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search users..." id="searchUsers">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Balance</th>
+                                            <th>Orders</th>
+                                            <th>Status</th>
+                                            <th>Registered</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTable">
+                                        <!-- Users will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analyticsSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-line"></i> Analytics & Reports</h2>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-bar"></i> Revenue Overview</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-pie-chart"></i> Services Distribution</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="servicesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settingsSection" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-cog"></i> Settings</h2>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-palette"></i> Appearance</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <label>Theme Mode</label>
+                                    <div class="theme-switch">
+                                        <button class="theme-btn active" data-theme="light">
+                                            <i class="fas fa-sun"></i> Light
+                                        </button>
+                                        <button class="theme-btn" data-theme="dark">
+                                            <i class="fas fa-moon"></i> Dark
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Primary Color</label>
+                                    <div class="color-picker">
+                                        <button class="color-btn active" data-color="blue"></button>
+                                        <button class="color-btn" data-color="purple"></button>
+                                        <button class="color-btn" data-color="green"></button>
+                                        <button class="color-btn" data-color="orange"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bell"></i> Notifications</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <label>Email Notifications</label>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Push Notifications</label>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-key"></i> Change Password
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-mobile-alt"></i> Two-Factor Auth
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Install PWA Prompt -->
+    <div id="installPrompt" class="install-prompt" style="display: none;">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <p>Install SMM Panel as an app!</p>
+            <button class="btn btn-primary btn-sm" id="installBtn">Install</button>
+            <button class="btn btn-text btn-sm" id="dismissInstall">Later</button>
+        </div>
+    </div>
+
+    <script src="smm-script.js"></script>
+</body>
+</html>

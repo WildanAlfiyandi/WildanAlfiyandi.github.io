@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Deployment Platform - Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="login-box glass-effect">
+                <div class="login-header">
+                    <div class="logo-container">
+                        <i class="fas fa-rocket logo-icon"></i>
+                    </div>
+                    <h1>Professional Deployment Platform</h1>
+                    <p class="subtitle">Secure Admin Access Portal</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" name="username" required placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" required placeholder="Password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-gradient">
+                        <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                    </button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+                <div class="demo-credentials">
+                    <div class="credentials-header">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Demo Access:</strong>
+                    </div>
+                    <div class="credential-item">
+                        <span class="label">Username:</span> <code>admin</code>
+                    </div>
+                    <div class="credential-item">
+                        <span class="label">Password:</span> <code>admin123</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboardPage" class="page">
+        <!-- Top Navigation Bar -->
+        <nav class="navbar glass-navbar">
+            <div class="container navbar-container">
+                <div class="nav-left">
+                    <i class="fas fa-rocket nav-logo"></i>
+                    <h2>Professional Deployment Platform</h2>
+                </div>
+                <div class="nav-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userDisplay"></span>
+                    </div>
+                    <button id="settingsBtn" class="btn btn-icon" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="logoutBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Stats Dashboard -->
+            <div class="stats-grid">
+                <div class="stat-card glass-effect">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalDeployments">0</h3>
+                        <p>Total Deployments</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-effect">
+                    <div class="stat-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="activeDeployments">0</h3>
+                        <p>Active Sites</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-effect">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalFiles">0</h3>
+                        <p>Files Deployed</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-effect">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalSize">0 KB</h3>
+                        <p>Total Size</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- Upload Section -->
+                <section class="card glass-effect">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cloud-upload-alt"></i> Upload Website Files</h3>
+                        <p>Supports HTML, CSS, JS, PHP, images, and more</p>
+                    </div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <p>Drag & drop files here or click to browse</p>
+                        <p class="upload-hint">All file types supported including PHP, HTML, CSS, JS, images, etc.</p>
+                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                        <button class="btn btn-primary btn-gradient" id="browseBtn">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </button>
+                    </div>
+
+                    <div id="fileList" class="file-list"></div>
+                    
+                    <!-- File Type Support Info -->
+                    <div id="fileTypeInfo" class="file-type-info" style="display: none;">
+                        <h4><i class="fas fa-info-circle"></i> Supported File Types:</h4>
+                        <div class="file-types">
+                            <span class="file-type-badge"><i class="fab fa-html5"></i> HTML</span>
+                            <span class="file-type-badge"><i class="fab fa-css3-alt"></i> CSS</span>
+                            <span class="file-type-badge"><i class="fab fa-js"></i> JavaScript</span>
+                            <span class="file-type-badge"><i class="fab fa-php"></i> PHP</span>
+                            <span class="file-type-badge"><i class="fas fa-file-image"></i> Images</span>
+                            <span class="file-type-badge"><i class="fas fa-file-pdf"></i> PDF</span>
+                            <span class="file-type-badge"><i class="fas fa-file-archive"></i> Archives</span>
+                            <span class="file-type-badge"><i class="fas fa-file"></i> Others</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Domain Configuration Section -->
+                <section class="card glass-effect" id="domainSection" style="display: none;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-globe"></i> Domain Configuration</h3>
+                        <p>Configure custom domain for your deployment</p>
+                    </div>
+                    
+                    <div class="domain-config">
+                        <div class="domain-option">
+                            <input type="radio" id="useSubdomain" name="domainType" value="subdomain" checked>
+                            <label for="useSubdomain">
+                                <strong>Use Auto-Generated Subdomain</strong>
+                                <p>Deploy to: <code id="autoSubdomain">deploy-xxxxx.kiosmurah.me</code></p>
+                            </label>
+                        </div>
+                        <div class="domain-option">
+                            <input type="radio" id="useCustomDomain" name="domainType" value="custom">
+                            <label for="useCustomDomain">
+                                <strong>Use Custom Domain</strong>
+                                <p>Point your own domain to this deployment</p>
+                            </label>
+                        </div>
+                        <div id="customDomainInput" class="custom-domain-input" style="display: none;">
+                            <div class="input-icon">
+                                <i class="fas fa-globe"></i>
+                                <input type="text" id="customDomain" placeholder="yourdomain.com">
+                            </div>
+                            <button class="btn btn-primary btn-sm" id="verifyDomainBtn">
+                                <i class="fas fa-check"></i> Verify Domain
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deployment Section -->
+                <section class="card glass-effect" id="deploySection" style="display: none;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-rocket"></i> Deploy Your Website</h3>
+                    </div>
+                    
+                    <div class="deploy-info">
+                        <div class="deploy-summary">
+                            <div class="summary-item">
+                                <i class="fas fa-file-code"></i>
+                                <span><strong id="fileCount">0</strong> files ready</span>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-hdd"></i>
+                                <span><strong id="totalFileSize">0 KB</strong> total size</span>
+                            </div>
+                        </div>
+                        <p class="deploy-message">Click the button below to start the deployment process.</p>
+                    </div>
+                    
+                    <button class="btn btn-success btn-large btn-gradient" id="deployBtn">
+                        <i class="fas fa-rocket"></i> Start Deploy
+                    </button>
+                    
+                    <div id="deployProgress" class="deploy-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="deployStatus" class="deploy-status">
+                            <i class="fas fa-spinner fa-spin"></i> Initializing deployment...
+                        </p>
+                    </div>
+
+                    <div id="deployResult" class="deploy-result" style="display: none;">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4>Deployment Successful!</h4>
+                        <p>Your website has been deployed and is now live.</p>
+                        <div class="deployed-link">
+                            <label><i class="fas fa-link"></i> Website URL:</label>
+                            <div class="url-box">
+                                <a id="websiteLink" href="#" target="_blank" class="website-link"></a>
+                                <button class="btn btn-icon copy-btn" id="copyUrlBtn" title="Copy URL">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-gradient" id="newDeployBtn">
+                            <i class="fas fa-plus"></i> Deploy Another Website
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Deployment History -->
+                <section class="card glass-effect">
+                    <div class="card-header">
+                        <h3><i class="fas fa-history"></i> Deployment History</h3>
+                        <button class="btn btn-secondary btn-sm" id="clearHistoryBtn" style="display: none;">
+                            <i class="fas fa-trash"></i> Clear History
+                        </button>
+                    </div>
+                    <div id="historyList" class="history-list">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No deployments yet. Upload files and deploy your first website!</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <button class="modal-close" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4><i class="fas fa-palette"></i> Theme</h4>
+                    <div class="theme-selector">
+                        <button class="theme-btn active" data-theme="purple">Purple</button>
+                        <button class="theme-btn" data-theme="blue">Blue</button>
+                        <button class="theme-btn" data-theme="green">Green</button>
+                        <button class="theme-btn" data-theme="orange">Orange</button>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                    <label class="switch">
+                        <input type="checkbox" id="notificationsToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>Enable deployment notifications</span>
+                </div>
+                <div class="settings-section">
+                    <h4><i class="fas fa-shield-alt"></i> Security</h4>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
