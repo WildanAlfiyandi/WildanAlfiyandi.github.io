@@ -25,20 +25,48 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+        cache: 'gradle'
         
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+      
     - name: Grant execute permission for gradlew
       run: chmod +x android-app/gradlew
       
+    - name: Validate Gradle wrapper
+      working-directory: android-app
+      run: |
+        if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+          echo "Gradle wrapper jar not found, will be downloaded by gradle"
+        fi
+      
     - name: Build Debug APK
       working-directory: android-app
-      run: ./gradlew assembleDebug --stacktrace
+      run: ./gradlew assembleDebug --stacktrace --no-daemon
+      
+    - name: Verify APK exists
+      run: |
+        if [ -f "android-app/app/build/outputs/apk/debug/app-debug.apk" ]; then
+          echo "✅ Debug APK created successfully"
+          ls -lh android-app/app/build/outputs/apk/debug/app-debug.apk
+        else
+          echo "❌ Debug APK not found!"
+          exit 1
+        fi
       
     - name: Build Release APK (unsigned)
       working-directory: android-app
-      run: ./gradlew assembleRelease --stacktrace
+      run: ./gradlew assembleRelease --stacktrace --no-daemon
       continue-on-error: true
       
     - name: Upload Debug APK
@@ -47,6 +75,7 @@ jobs:
         name: app-debug
         path: android-app/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
+        if-no-files-found: error
         
     - name: Upload Release APK
       uses: actions/upload-artifact@v4
@@ -55,25 +84,35 @@ jobs:
         name: app-release-unsigned
         path: android-app/app/build/outputs/apk/release/app-release-unsigned.apk
         retention-days: 30
+        if-no-files-found: warn
       continue-on-error: true
       
     - name: Create Build Summary
+      if: always()
       run: |
         echo "## 📱 Build Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "✅ **Debug APK berhasil dibuild!**" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Download APK" >> $GITHUB_STEP_SUMMARY
-        echo "- Debug APK tersedia di artifacts (app-debug)" >> $GITHUB_STEP_SUMMARY
-        echo "- File: app-debug.apk" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Cara Download:" >> $GITHUB_STEP_SUMMARY
-        echo "1. Buka tab **Actions** di GitHub" >> $GITHUB_STEP_SUMMARY
-        echo "2. Pilih workflow run ini" >> $GITHUB_STEP_SUMMARY
-        echo "3. Scroll ke bawah ke section **Artifacts**" >> $GITHUB_STEP_SUMMARY
-        echo "4. Download **app-debug**" >> $GITHUB_STEP_SUMMARY
-        echo "5. Extract file zip, kemudian install app-debug.apk" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Test Credentials:" >> $GITHUB_STEP_SUMMARY
-        echo "- Admin: \`admin@example.com\` / \`admin123\`" >> $GITHUB_STEP_SUMMARY
-        echo "- Verification Code: \`123456\`" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "android-app/app/build/outputs/apk/debug/app-debug.apk" ]; then
+          echo "✅ **Debug APK berhasil dibuild!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Download APK" >> $GITHUB_STEP_SUMMARY
+          echo "- Debug APK tersedia di artifacts (app-debug)" >> $GITHUB_STEP_SUMMARY
+          echo "- File: app-debug.apk" >> $GITHUB_STEP_SUMMARY
+          echo "- Size: $(ls -lh android-app/app/build/outputs/apk/debug/app-debug.apk | awk '{print $5}')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Cara Download:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Buka tab **Actions** di GitHub" >> $GITHUB_STEP_SUMMARY
+          echo "2. Pilih workflow run ini" >> $GITHUB_STEP_SUMMARY
+          echo "3. Scroll ke bawah ke section **Artifacts**" >> $GITHUB_STEP_SUMMARY
+          echo "4. Download **app-debug**" >> $GITHUB_STEP_SUMMARY
+          echo "5. Extract file zip, kemudian install app-debug.apk" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Credentials:" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin: \`admin@example.com\` / \`admin123\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Verification Code: \`123456\`" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Build gagal! Debug APK tidak ditemukan.**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Silakan cek logs untuk detail error." >> $GITHUB_STEP_SUMMARY
+        fi
