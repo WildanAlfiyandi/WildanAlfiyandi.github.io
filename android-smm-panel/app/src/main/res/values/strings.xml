@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SMM Panel</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="welcome">Welcome</string>
+    <string name="logout">Logout</string>
+    <string name="orders">Orders</string>
+    <string name="users">Users</string>
+    <string name="services">Services</string>
+    <string name="analytics">Analytics</string>
+    <string name="settings">Settings</string>
+</resources>
