@@ -1396,17 +1396,24 @@ function testBackendConnection() {
         return;
     }
     
+    // Validate URL format
+    try {
+        new URL(backendUrl);
+    } catch {
+        showToast('Error', 'Format URL tidak valid. Gunakan format: https://example.com', 'error');
+        return;
+    }
+    
     statusEl.textContent = 'Testing...';
     statusEl.className = 'conn-status';
     
-    // Simulate connection test
+    // Simulate connection test (in production, make actual API call)
     setTimeout(() => {
         if (backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1')) {
             statusEl.textContent = 'Connected (Local)';
             statusEl.className = 'conn-status connected';
             showToast('Berhasil', 'Koneksi berhasil!', 'success');
         } else {
-            // In production, make actual API call
             statusEl.textContent = 'Connected';
             statusEl.className = 'conn-status connected';
             showToast('Berhasil', 'Koneksi ke backend berhasil!', 'success');
@@ -1486,7 +1493,8 @@ async function handleDbImport(event) {
 }
 
 async function backupDatabase() {
-    showToast('Info', 'Backup ke cloud akan segera tersedia', 'info');
+    // Cloud backup functionality - in production, connect to a cloud storage service
+    showToast('Info', 'Cloud backup akan tersedia di versi mendatang. Gunakan Export Data untuk backup lokal.', 'info');
 }
 
 async function resetDatabase() {
@@ -1494,8 +1502,14 @@ async function resetDatabase() {
     if (!confirm('Konfirmasi sekali lagi: Hapus SEMUA data?')) return;
     
     try {
+        // Get the database instance from the Database module
+        const database = await new Promise((resolve) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onsuccess = () => resolve(request.result);
+        });
+        
         // Clear all stores
-        const transaction = db.transaction(Object.values(STORES), 'readwrite');
+        const transaction = database.transaction(Object.values(STORES), 'readwrite');
         
         Object.values(STORES).forEach(storeName => {
             const store = transaction.objectStore(storeName);

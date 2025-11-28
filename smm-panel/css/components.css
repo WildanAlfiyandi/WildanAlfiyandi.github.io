@@ -1538,7 +1538,7 @@
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    font-family: 'Monaco', 'Consolas', monospace;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
     font-size: 14px;
     color: #a5d6ff;
     resize: vertical;
