@@ -449,21 +449,99 @@ npx cap open android
 
 ### Masalah Umum
 
-#### 1. WebView tidak memuat
+#### 1. Manifest Merger Error (Jetpack Compose)
+
+Jika menggunakan template dengan Jetpack Compose dan muncul error seperti:
+```
+Merging decision tree log
+MERGED from [androidx.compose.material3:material3-android:1.3.0]...
+```
+
+**Solusi:**
+
+**Option A: Gunakan Template Empty Activity (Tanpa Compose)**
+1. Saat membuat project baru, pilih **"Empty Views Activity"** bukan **"Empty Activity"**
+2. Ini akan membuat project tanpa Compose dependencies
+
+**Option B: Jika sudah terlanjur pakai Compose Template**
+
+Edit `app/build.gradle.kts` atau `app/build.gradle`:
+
+```kotlin
+// Hapus semua Compose dependencies:
+// implementation(libs.androidx.activity.compose)
+// implementation(platform(libs.androidx.compose.bom))
+// implementation(libs.androidx.ui)
+// implementation(libs.androidx.ui.graphics)
+// implementation(libs.androidx.ui.tooling.preview)
+// implementation(libs.androidx.material3)
+
+// Ganti dengan dependencies minimal:
+dependencies {
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.android.material:material:1.11.0")
+}
+```
+
+Dan hapus Compose build features di `app/build.gradle.kts`:
+```kotlin
+android {
+    // Hapus bagian ini:
+    // buildFeatures {
+    //     compose = true
+    // }
+    // composeOptions {
+    //     kotlinCompilerExtensionVersion = "1.5.1"
+    // }
+}
+```
+
+**Option C: Fix Manifest Merger Conflict**
+
+Jika masih error, tambahkan di `AndroidManifest.xml`:
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.yourcompany.smmpanel">
+    
+    <application
+        tools:replace="android:theme"
+        ...
+```
+
+**Option D: Clean & Rebuild Project**
+```bash
+# Di Android Studio Terminal
+./gradlew clean
+./gradlew build
+```
+
+Atau dari menu: **Build > Clean Project** lalu **Build > Rebuild Project**
+
+---
+
+#### 2. WebView tidak memuat
 - Pastikan `android:usesCleartextTraffic="true"` di manifest
 - Cek permission INTERNET
 
-#### 2. IndexedDB tidak bekerja
+#### 3. IndexedDB tidak bekerja
 - Pastikan `domStorageEnabled = true`
 - Pastikan `databaseEnabled = true`
 
-#### 3. File upload tidak berfungsi
+#### 4. File upload tidak berfungsi
 - Implement `onShowFileChooser` di WebChromeClient
 - Tambahkan permission storage
 
-#### 4. CSS/JS tidak dimuat
+#### 5. CSS/JS tidak dimuat
 - Pastikan path asset benar
 - Cek console log untuk error
+
+#### 6. Gradle Sync Failed
+- Pastikan Android SDK terbaru terinstall
+- Cek koneksi internet untuk download dependencies
+- File > Invalidate Caches and Restart
 
 ---
 
