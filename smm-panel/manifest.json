@@ -1,0 +1,97 @@
+{
+    "name": "SMM Panel Premium",
+    "short_name": "SMM Panel",
+    "description": "Layanan Social Media Marketing Panel Terbaik dan Termurah",
+    "start_url": "/smm-panel/index.html",
+    "display": "standalone",
+    "background_color": "#0f0f23",
+    "theme_color": "#6366f1",
+    "orientation": "portrait-primary",
+    "scope": "/smm-panel/",
+    "lang": "id",
+    "categories": ["business", "social", "utilities"],
+    "icons": [
+        {
+            "src": "icons/icon-72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-152.png",
+            "sizes": "152x152",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-384.png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshots/dashboard.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Dashboard SMM Panel"
+        },
+        {
+            "src": "screenshots/mobile.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Mobile View"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Order Layanan",
+            "short_name": "Order",
+            "description": "Buat order layanan SMM baru",
+            "url": "/smm-panel/index.html#services",
+            "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+        },
+        {
+            "name": "Deposit",
+            "short_name": "Deposit",
+            "description": "Tambah saldo akun",
+            "url": "/smm-panel/index.html#deposit",
+            "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false
+}
