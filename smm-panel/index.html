@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="SMM Panel Premium - Layanan Social Media Marketing Terbaik">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <title>SMM Panel Premium</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="logo-ring"></div>
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h1 class="splash-title">SMM Panel</h1>
+            <p class="splash-subtitle">Premium Services</p>
+            <div class="splash-loader">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+        <div class="splash-particles" id="splashParticles"></div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Animated Background -->
+        <div class="animated-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="login-container">
+                <div class="login-card glass-morphism">
+                    <div class="login-header">
+                        <div class="avatar-container">
+                            <div class="avatar-ring pulse-ring"></div>
+                            <div class="avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <h1>Welcome Back!</h1>
+                        <p>Login ke akun SMM Panel Anda</p>
+                    </div>
+                    
+                    <form id="loginForm" class="login-form">
+                        <div class="input-group floating-label">
+                            <input type="text" id="loginUsername" required autocomplete="username">
+                            <label>Username / Email</label>
+                            <i class="fas fa-user input-icon"></i>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group floating-label">
+                            <input type="password" id="loginPassword" required autocomplete="current-password">
+                            <label>Password</label>
+                            <i class="fas fa-lock input-icon"></i>
+                            <div class="input-line"></div>
+                            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Ingat Saya
+                            </label>
+                            <a href="#" class="forgot-link">Lupa Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-glow">
+                            <span>Masuk</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+
+                        <div id="loginError" class="error-toast"></div>
+                    </form>
+
+                    <div class="login-footer">
+                        <p>Belum punya akun? <a href="#" onclick="showPage('registerPage')">Daftar Sekarang</a></p>
+                    </div>
+
+                    <div class="demo-info glass-morphism">
+                        <div class="demo-header">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Demo Account</span>
+                        </div>
+                        <div class="demo-credentials">
+                            <div class="credential">
+                                <span class="label">User:</span>
+                                <code>user</code> / <code>user123</code>
+                            </div>
+                            <div class="credential">
+                                <span class="label">Admin:</span>
+                                <code>admin</code> / <code>admin123</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decorative Elements -->
+                <div class="login-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="registerPage" class="page">
+            <div class="login-container">
+                <div class="login-card glass-morphism">
+                    <button class="back-btn" onclick="showPage('loginPage')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    
+                    <div class="login-header">
+                        <div class="avatar-container">
+                            <div class="avatar-ring pulse-ring"></div>
+                            <div class="avatar">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                        <h1>Daftar Akun</h1>
+                        <p>Buat akun SMM Panel baru</p>
+                    </div>
+                    
+                    <form id="registerForm" class="login-form">
+                        <div class="input-group floating-label">
+                            <input type="text" id="regUsername" required>
+                            <label>Username</label>
+                            <i class="fas fa-user input-icon"></i>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group floating-label">
+                            <input type="email" id="regEmail" required>
+                            <label>Email</label>
+                            <i class="fas fa-envelope input-icon"></i>
+                            <div class="input-line"></div>
+                        </div>
+
+                        <div class="input-group floating-label">
+                            <input type="password" id="regPassword" required>
+                            <label>Password</label>
+                            <i class="fas fa-lock input-icon"></i>
+                            <div class="input-line"></div>
+                        </div>
+
+                        <div class="input-group floating-label">
+                            <input type="password" id="regConfirmPassword" required>
+                            <label>Konfirmasi Password</label>
+                            <i class="fas fa-lock input-icon"></i>
+                            <div class="input-line"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-glow">
+                            <span>Daftar Sekarang</span>
+                            <i class="fas fa-rocket"></i>
+                        </button>
+
+                        <div id="registerError" class="error-toast"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Dashboard -->
+        <div id="dashboardPage" class="page">
+            <!-- Top Navigation -->
+            <nav class="top-nav glass-morphism">
+                <div class="nav-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="nav-brand">
+                        <i class="fas fa-bolt"></i>
+                        <span>SMM Panel</span>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <div class="balance-display glass-morphism" onclick="navigateTo('depositContent')">
+                        <i class="fas fa-wallet"></i>
+                        <span id="userBalance">Rp 0</span>
+                    </div>
+                    <button class="notification-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="user-avatar" onclick="toggleUserMenu()">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User" id="userAvatarImg">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- User Menu Dropdown -->
+            <div id="userMenu" class="user-menu glass-morphism hidden">
+                <div class="user-menu-header">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User" id="menuAvatarImg">
+                    <div class="user-info">
+                        <h4 id="menuUserName">User</h4>
+                        <p id="menuUserEmail">user@email.com</p>
+                    </div>
+                </div>
+                <div class="user-menu-items">
+                    <a href="#" onclick="showPage('profilePage')"><i class="fas fa-user"></i> Profil Saya</a>
+                    <a href="#" onclick="showPage('settingsPage')"><i class="fas fa-cog"></i> Pengaturan</a>
+                    <a href="#" onclick="navigateTo('ordersContent')"><i class="fas fa-history"></i> Riwayat</a>
+                    <a href="#" onclick="handleLogout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside id="sidebar" class="sidebar glass-morphism">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">
+                        <i class="fas fa-bolt"></i>
+                        <span>SMM Panel</span>
+                    </div>
+                    <button class="sidebar-close" onclick="closeSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-page="dashboardContent">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="servicesContent">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Order Layanan</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="ordersContent">
+                        <i class="fas fa-list-alt"></i>
+                        <span>Daftar Order</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="depositContent">
+                        <i class="fas fa-wallet"></i>
+                        <span>Deposit</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="ticketContent">
+                        <i class="fas fa-headset"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="apiContent">
+                        <i class="fas fa-code"></i>
+                        <span>API</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="sidebar-user">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User" id="sidebarAvatarImg">
+                        <div class="user-details">
+                            <h4 id="sidebarUserName">User</h4>
+                            <span class="user-role" id="sidebarUserRole">Member</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Dashboard Content -->
+                <div id="dashboardContent" class="content-section active">
+                    <!-- Welcome Banner -->
+                    <div class="welcome-banner glass-morphism">
+                        <div class="welcome-content">
+                            <h2>Selamat Datang, <span id="welcomeUserName">User</span>! 👋</h2>
+                            <p>Kelola semua kebutuhan social media Anda dengan mudah dan cepat.</p>
+                        </div>
+                        <div class="welcome-illustration">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card glass-morphism" data-aos="fade-up">
+                            <div class="stat-icon gradient-blue">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalOrders">0</h3>
+                                <p>Total Order</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>12%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-morphism" data-aos="fade-up" data-aos-delay="100">
+                            <div class="stat-icon gradient-green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="completedOrders">0</h3>
+                                <p>Selesai</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>8%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-morphism" data-aos="fade-up" data-aos-delay="200">
+                            <div class="stat-icon gradient-yellow">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="pendingOrders">0</h3>
+                                <p>Pending</p>
+                            </div>
+                            <div class="stat-trend down">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>3%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card glass-morphism" data-aos="fade-up" data-aos-delay="300">
+                            <div class="stat-icon gradient-purple">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalSpent">Rp 0</h3>
+                                <p>Total Belanja</p>
+                            </div>
+                            <div class="stat-trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>24%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h3 class="section-title">
+                            <i class="fas fa-bolt"></i>
+                            Aksi Cepat
+                        </h3>
+                        <div class="actions-grid">
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-blue">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <span>Instagram</span>
+                            </button>
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-red">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <span>YouTube</span>
+                            </button>
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-dark">
+                                    <i class="fab fa-tiktok"></i>
+                                </div>
+                                <span>TikTok</span>
+                            </button>
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-blue-light">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <span>Twitter</span>
+                            </button>
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-blue-dark">
+                                    <i class="fab fa-facebook"></i>
+                                </div>
+                                <span>Facebook</span>
+                            </button>
+                            <button class="action-card glass-morphism" onclick="navigateTo('servicesContent')">
+                                <div class="action-icon gradient-cyan">
+                                    <i class="fab fa-telegram"></i>
+                                </div>
+                                <span>Telegram</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="recent-orders">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-history"></i>
+                                Order Terbaru
+                            </h3>
+                            <a href="#" class="view-all" onclick="navigateTo('ordersContent')">Lihat Semua</a>
+                        </div>
+                        <div class="orders-table glass-morphism">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Layanan</th>
+                                            <th>Jumlah</th>
+                                            <th>Status</th>
+                                            <th>Tanggal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentOrdersTable">
+                                        <tr>
+                                            <td colspan="5" class="empty-state">
+                                                <i class="fas fa-inbox"></i>
+                                                <p>Belum ada order</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Content -->
+                <div id="servicesContent" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-shopping-cart"></i> Order Layanan</h2>
+                        <p>Pilih layanan SMM yang Anda butuhkan</p>
+                    </div>
+
+                    <div class="service-order-form glass-morphism">
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="serviceCategory" class="form-select">
+                                <option value="">-- Pilih Kategori --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Layanan</label>
+                            <select id="serviceSelect" class="form-select" disabled>
+                                <option value="">-- Pilih Layanan --</option>
+                            </select>
+                        </div>
+
+                        <div id="serviceDetails" class="service-details hidden">
+                            <div class="detail-card glass-morphism">
+                                <div class="detail-row">
+                                    <span>Harga:</span>
+                                    <strong id="servicePrice">Rp 0</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Min Order:</span>
+                                    <strong id="serviceMin">0</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Max Order:</span>
+                                    <strong id="serviceMax">0</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Estimasi:</span>
+                                    <strong id="serviceEstimate">-</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Link Target</label>
+                            <input type="url" id="targetLink" class="form-input" placeholder="https://instagram.com/username">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Jumlah</label>
+                            <input type="number" id="orderQuantity" class="form-input" placeholder="1000" min="1">
+                        </div>
+
+                        <div class="order-total glass-morphism">
+                            <span>Total Harga:</span>
+                            <strong id="orderTotal">Rp 0</strong>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-glow btn-full" id="submitOrder">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Buat Pesanan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Content -->
+                <div id="ordersContent" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-list-alt"></i> Daftar Order</h2>
+                        <p>Lihat dan kelola semua pesanan Anda</p>
+                    </div>
+
+                    <div class="orders-filters glass-morphism">
+                        <select id="orderStatusFilter" class="form-select">
+                            <option value="">Semua Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <input type="text" id="orderSearch" class="form-input" placeholder="Cari order...">
+                    </div>
+
+                    <div class="orders-list" id="ordersList">
+                        <!-- Orders will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Deposit Content -->
+                <div id="depositContent" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-wallet"></i> Deposit Saldo</h2>
+                        <p>Isi saldo untuk melakukan pemesanan</p>
+                    </div>
+
+                    <div class="deposit-grid">
+                        <div class="deposit-form glass-morphism">
+                            <h3>Tambah Saldo</h3>
+                            
+                            <div class="form-group">
+                                <label>Jumlah Deposit</label>
+                                <input type="number" id="depositAmount" class="form-input" placeholder="Minimal Rp 10.000" min="10000">
+                            </div>
+
+                            <div class="deposit-quick-amounts">
+                                <button class="quick-amount" onclick="setDepositAmount(10000)">10K</button>
+                                <button class="quick-amount" onclick="setDepositAmount(25000)">25K</button>
+                                <button class="quick-amount" onclick="setDepositAmount(50000)">50K</button>
+                                <button class="quick-amount" onclick="setDepositAmount(100000)">100K</button>
+                                <button class="quick-amount" onclick="setDepositAmount(250000)">250K</button>
+                                <button class="quick-amount" onclick="setDepositAmount(500000)">500K</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Metode Pembayaran</label>
+                                <div class="payment-methods">
+                                    <label class="payment-method">
+                                        <input type="radio" name="paymentMethod" value="bank_transfer" checked>
+                                        <div class="method-card glass-morphism">
+                                            <i class="fas fa-university"></i>
+                                            <span>Bank Transfer</span>
+                                        </div>
+                                    </label>
+                                    <label class="payment-method">
+                                        <input type="radio" name="paymentMethod" value="ewallet">
+                                        <div class="method-card glass-morphism">
+                                            <i class="fas fa-wallet"></i>
+                                            <span>E-Wallet</span>
+                                        </div>
+                                    </label>
+                                    <label class="payment-method">
+                                        <input type="radio" name="paymentMethod" value="qris">
+                                        <div class="method-card glass-morphism">
+                                            <i class="fas fa-qrcode"></i>
+                                            <span>QRIS</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-glow btn-full" id="submitDeposit">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Buat Deposit</span>
+                            </button>
+                        </div>
+
+                        <div class="deposit-history glass-morphism">
+                            <h3>Riwayat Deposit</h3>
+                            <div class="history-list" id="depositHistoryList">
+                                <!-- Deposit history will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support/Ticket Content -->
+                <div id="ticketContent" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-headset"></i> Support</h2>
+                        <p>Butuh bantuan? Hubungi tim support kami</p>
+                    </div>
+
+                    <div class="support-grid">
+                        <div class="create-ticket glass-morphism">
+                            <h3>Buat Tiket Baru</h3>
+                            <form id="ticketForm">
+                                <div class="form-group">
+                                    <label>Subjek</label>
+                                    <input type="text" id="ticketSubject" class="form-input" placeholder="Masalah dengan...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Prioritas</label>
+                                    <select id="ticketPriority" class="form-select">
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pesan</label>
+                                    <textarea id="ticketMessage" class="form-textarea" rows="5" placeholder="Jelaskan masalah Anda..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-glow btn-full">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Kirim Tiket</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="tickets-list glass-morphism">
+                            <h3>Tiket Saya</h3>
+                            <div id="userTicketsList">
+                                <!-- Tickets will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Content -->
+                <div id="apiContent" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-code"></i> API Documentation</h2>
+                        <p>Integrasi SMM Panel dengan sistem Anda</p>
+                    </div>
+
+                    <div class="api-info glass-morphism">
+                        <div class="api-key-section">
+                            <h3>API Key Anda</h3>
+                            <div class="api-key-display">
+                                <code id="userApiKey">••••••••••••••••</code>
+                                <button class="btn btn-icon" onclick="toggleApiKey()">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-icon" onclick="copyApiKey()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-secondary" onclick="regenerateApiKey()">
+                                <i class="fas fa-sync-alt"></i>
+                                Regenerate Key
+                            </button>
+                        </div>
+
+                        <div class="api-endpoints">
+                            <h3>Endpoints</h3>
+                            <div class="endpoint-list">
+                                <div class="endpoint-item">
+                                    <div class="endpoint-method get">GET</div>
+                                    <code>/api/v1/services</code>
+                                    <span>Get all services</span>
+                                </div>
+                                <div class="endpoint-item">
+                                    <div class="endpoint-method post">POST</div>
+                                    <code>/api/v1/order</code>
+                                    <span>Create new order</span>
+                                </div>
+                                <div class="endpoint-item">
+                                    <div class="endpoint-method get">GET</div>
+                                    <code>/api/v1/order/{id}</code>
+                                    <span>Get order status</span>
+                                </div>
+                                <div class="endpoint-item">
+                                    <div class="endpoint-method get">GET</div>
+                                    <code>/api/v1/balance</code>
+                                    <span>Get balance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminPage" class="page">
+            <!-- Admin Top Navigation -->
+            <nav class="top-nav glass-morphism admin-nav">
+                <div class="nav-left">
+                    <button class="menu-toggle" id="adminMenuToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="nav-brand">
+                        <i class="fas fa-crown"></i>
+                        <span>Admin Panel</span>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <div class="admin-stats-mini">
+                        <span class="stat-badge"><i class="fas fa-users"></i> <span id="adminTotalUsers">0</span></span>
+                        <span class="stat-badge"><i class="fas fa-shopping-cart"></i> <span id="adminTotalOrders">0</span></span>
+                    </div>
+                    <button class="notification-btn" id="adminNotificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+                    <div class="user-avatar" onclick="toggleAdminMenu()">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=ef4444&color=fff" alt="Admin">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Admin Menu Dropdown -->
+            <div id="adminMenu" class="user-menu glass-morphism hidden">
+                <div class="user-menu-header admin-header">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=ef4444&color=fff" alt="Admin">
+                    <div class="user-info">
+                        <h4>Administrator</h4>
+                        <p>Super Admin</p>
+                    </div>
+                </div>
+                <div class="user-menu-items">
+                    <a href="#" onclick="showPage('dashboardPage')"><i class="fas fa-user"></i> User Mode</a>
+                    <a href="#" onclick="handleLogout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+
+            <!-- Admin Sidebar -->
+            <aside id="adminSidebar" class="sidebar glass-morphism admin-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">
+                        <i class="fas fa-crown"></i>
+                        <span>Admin Panel</span>
+                    </div>
+                    <button class="sidebar-close" onclick="closeAdminSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <a href="#" class="nav-item active" data-page="adminDashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminUsers">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminOrders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Orders</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminServices">
+                        <i class="fas fa-server"></i>
+                        <span>Services</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminDeposits">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Deposits</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminTickets">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Tickets</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminSettings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Admin Main Content -->
+            <main class="main-content admin-content">
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" class="content-section active">
+                    <div class="admin-welcome glass-morphism">
+                        <div class="welcome-content">
+                            <h2>Admin Dashboard</h2>
+                            <p>Monitor dan kelola semua aktivitas SMM Panel</p>
+                        </div>
+                        <div class="welcome-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="currentDate"></span>
+                        </div>
+                    </div>
+
+                    <!-- Admin Stats -->
+                    <div class="admin-stats-grid">
+                        <div class="admin-stat-card glass-morphism gradient-blue-card">
+                            <div class="stat-content">
+                                <h3 id="adminStatUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card glass-morphism gradient-green-card">
+                            <div class="stat-content">
+                                <h3 id="adminStatOrders">0</h3>
+                                <p>Total Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card glass-morphism gradient-purple-card">
+                            <div class="stat-content">
+                                <h3 id="adminStatRevenue">Rp 0</h3>
+                                <p>Total Revenue</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card glass-morphism gradient-orange-card">
+                            <div class="stat-content">
+                                <h3 id="adminStatPending">0</h3>
+                                <p>Pending Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-grid">
+                        <div class="chart-card glass-morphism">
+                            <h3><i class="fas fa-chart-line"></i> Order Statistics</h3>
+                            <div class="chart-container">
+                                <canvas id="ordersChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card glass-morphism">
+                            <h3><i class="fas fa-chart-pie"></i> Revenue by Platform</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="recent-activity glass-morphism">
+                        <h3><i class="fas fa-stream"></i> Real-time Activity</h3>
+                        <div class="activity-feed" id="activityFeed">
+                            <!-- Activities will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Users -->
+                <div id="adminUsers" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-users"></i> User Management</h2>
+                        <button class="btn btn-primary" onclick="showAddUserModal()">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+                    <div class="data-table glass-morphism">
+                        <div class="table-filters">
+                            <input type="text" id="userSearch" class="form-input" placeholder="Search users...">
+                            <select id="userRoleFilter" class="form-select">
+                                <option value="">All Roles</option>
+                                <option value="user">User</option>
+                                <option value="reseller">Reseller</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Balance</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Orders -->
+                <div id="adminOrders" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-shopping-cart"></i> Order Management</h2>
+                    </div>
+                    <div class="data-table glass-morphism">
+                        <div class="table-filters">
+                            <input type="text" id="adminOrderSearch" class="form-input" placeholder="Search orders...">
+                            <select id="adminOrderStatus" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="adminOrdersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>User</th>
+                                        <th>Service</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminOrdersBody">
+                                    <!-- Orders will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Services -->
+                <div id="adminServices" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-server"></i> Service Management</h2>
+                        <button class="btn btn-primary" onclick="showAddServiceModal()">
+                            <i class="fas fa-plus"></i> Add Service
+                        </button>
+                    </div>
+                    <div class="data-table glass-morphism">
+                        <div class="table-responsive">
+                            <table id="servicesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Category</th>
+                                        <th>Service Name</th>
+                                        <th>Price</th>
+                                        <th>Min</th>
+                                        <th>Max</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="servicesTableBody">
+                                    <!-- Services will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Deposits -->
+                <div id="adminDeposits" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-money-bill-wave"></i> Deposit Management</h2>
+                    </div>
+                    <div class="data-table glass-morphism">
+                        <div class="table-responsive">
+                            <table id="depositsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="depositsTableBody">
+                                    <!-- Deposits will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tickets -->
+                <div id="adminTickets" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-ticket-alt"></i> Support Tickets</h2>
+                    </div>
+                    <div class="data-table glass-morphism">
+                        <div class="table-responsive">
+                            <table id="ticketsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Subject</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketsTableBody">
+                                    <!-- Tickets will be rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Settings -->
+                <div id="adminSettings" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-cog"></i> Panel Settings</h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="settings-card glass-morphism">
+                            <h3><i class="fas fa-globe"></i> General Settings</h3>
+                            <form id="generalSettingsForm">
+                                <div class="form-group">
+                                    <label>Site Name</label>
+                                    <input type="text" class="form-input" value="SMM Panel Premium">
+                                </div>
+                                <div class="form-group">
+                                    <label>Site Description</label>
+                                    <textarea class="form-textarea">Layanan SMM Panel Terbaik dan Termurah</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </form>
+                        </div>
+                        <div class="settings-card glass-morphism">
+                            <h3><i class="fas fa-palette"></i> Appearance</h3>
+                            <div class="theme-options">
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="purple" checked>
+                                    <span class="theme-preview purple"></span>
+                                    <span>Purple</span>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="blue">
+                                    <span class="theme-preview blue"></span>
+                                    <span>Blue</span>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="green">
+                                    <span class="theme-preview green"></span>
+                                    <span>Green</span>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="dark">
+                                    <span class="theme-preview dark"></span>
+                                    <span>Dark</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Notification Panel -->
+        <div id="notificationPanel" class="notification-panel glass-morphism hidden">
+            <div class="panel-header">
+                <h3><i class="fas fa-bell"></i> Notifikasi</h3>
+                <button class="mark-all-read" onclick="markAllNotificationsRead()">Tandai Semua Dibaca</button>
+            </div>
+            <div class="notifications-list" id="notificationsList">
+                <!-- Notifications will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="modalOverlay" class="modal-overlay hidden">
+            <div id="modalContent" class="modal-content glass-morphism">
+                <!-- Modal content will be injected here -->
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/realtime.js"></script>
+</body>
+</html>
