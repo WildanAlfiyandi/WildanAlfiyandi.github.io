@@ -449,76 +449,281 @@ npx cap open android
 
 ### Masalah Umum
 
-#### 1. Manifest Merger Error (Jetpack Compose)
+#### 1. Manifest Merger Error (Jetpack Compose) ⚠️ PALING UMUM
 
-Jika menggunakan template dengan Jetpack Compose dan muncul error seperti:
+Jika muncul error seperti:
 ```
 Merging decision tree log
 MERGED from [androidx.compose.material3:material3-android:1.3.0]...
 ```
 
-**Solusi:**
+**Ini terjadi karena Gradle Cache masih menyimpan Compose dependencies dari project lain.**
 
-**Option A: Gunakan Template Empty Activity (Tanpa Compose)**
-1. Saat membuat project baru, pilih **"Empty Views Activity"** bukan **"Empty Activity"**
-2. Ini akan membuat project tanpa Compose dependencies
+---
 
-**Option B: Jika sudah terlanjur pakai Compose Template**
+### ✅ SOLUSI LENGKAP (Ikuti Semua Langkah):
 
-Edit `app/build.gradle.kts` atau `app/build.gradle`:
+#### Langkah 1: Hapus Gradle Cache Global
 
-```kotlin
-// Hapus semua Compose dependencies:
-// implementation(libs.androidx.activity.compose)
-// implementation(platform(libs.androidx.compose.bom))
-// implementation(libs.androidx.ui)
-// implementation(libs.androidx.ui.graphics)
-// implementation(libs.androidx.ui.tooling.preview)
-// implementation(libs.androidx.material3)
+Buka **File Explorer** dan hapus folder berikut:
+```
+C:\Users\[NamaUser]\.gradle\caches\
+```
 
-// Ganti dengan dependencies minimal:
+Atau jalankan di **Command Prompt / PowerShell**:
+```cmd
+rd /s /q "%USERPROFILE%\.gradle\caches"
+```
+
+**Untuk Mac/Linux:**
+```bash
+rm -rf ~/.gradle/caches/
+```
+
+---
+
+#### Langkah 2: Buat Project Baru dengan Benar
+
+1. Buka Android Studio
+2. Klik **File > New > New Project**
+3. **⚠️ PENTING: Pilih "Empty Views Activity"** (BUKAN "Empty Activity")
+   - "Empty Activity" = dengan Compose
+   - "Empty Views Activity" = tanpa Compose (yang kita butuhkan)
+4. Konfigurasi:
+   - Name: `SMM Panel`
+   - Package name: `com.yourcompany.smmpanel`
+   - Language: **Java** (lebih simple) atau Kotlin
+   - Minimum SDK: API 21
+5. **Jangan centang** "Use Compose"
+
+---
+
+#### Langkah 3: Verifikasi build.gradle (Module: app)
+
+Pastikan file `app/build.gradle` atau `app/build.gradle.kts` **TIDAK** memiliki:
+
+```gradle
+// ❌ HAPUS SEMUA INI jika ada:
+buildFeatures {
+    compose = true
+}
+composeOptions {
+    kotlinCompilerExtensionVersion = "..."
+}
+
+dependencies {
+    // ❌ HAPUS dependency compose:
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.material3)
+}
+```
+
+**Ganti dengan dependencies ini:**
+
+```gradle
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.webkit:webkit:1.8.0")
 }
 ```
 
-Dan hapus Compose build features di `app/build.gradle.kts`:
-```kotlin
+---
+
+#### Langkah 4: Verifikasi libs.versions.toml (jika ada)
+
+Jika ada file `gradle/libs.versions.toml`, hapus semua entry compose:
+
+```toml
+# ❌ HAPUS semua baris yang mengandung "compose":
+# androidx-activity-compose = ...
+# androidx-compose-bom = ...
+# ui = ...
+# material3 = ...
+```
+
+---
+
+#### Langkah 5: Hapus Cache Project & Rebuild
+
+1. Tutup Android Studio
+2. Hapus folder `.gradle` di dalam project:
+   ```cmd
+   rd /s /q "C:\Users\[NamaUser]\AndroidStudioProjects\[NamaProject]\.gradle"
+   ```
+3. Hapus folder `build`:
+   ```cmd
+   rd /s /q "C:\Users\[NamaUser]\AndroidStudioProjects\[NamaProject]\app\build"
+   ```
+4. Buka lagi Android Studio
+5. Klik **File > Sync Project with Gradle Files**
+6. Klik **Build > Clean Project**
+7. Klik **Build > Rebuild Project**
+
+---
+
+#### Langkah 6: Invalidate Caches (Jika Masih Error)
+
+1. Klik **File > Invalidate Caches...**
+2. Centang semua opsi
+3. Klik **Invalidate and Restart**
+4. Tunggu Android Studio restart dan re-index
+
+---
+
+### 📋 build.gradle (Module: app) yang BENAR
+
+Contoh lengkap file `app/build.gradle` yang benar untuk WebView app:
+
+```gradle
+plugins {
+    id 'com.android.application'
+}
+
 android {
-    // Hapus bagian ini:
-    // buildFeatures {
-    //     compose = true
-    // }
-    // composeOptions {
-    //     kotlinCompilerExtensionVersion = "1.5.1"
-    // }
+    namespace 'com.yourcompany.smmpanel'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.yourcompany.smmpanel"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.webkit:webkit:1.8.0'
 }
 ```
 
-**Option C: Fix Manifest Merger Conflict**
+---
 
-Jika masih error, tambahkan di `AndroidManifest.xml`:
-```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.yourcompany.smmpanel">
+### 📋 MainActivity.java yang SIMPLE
+
+Gunakan Java untuk lebih simple. Buat file `MainActivity.java`:
+
+```java
+package com.yourcompany.smmpanel;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
     
-    <application
-        tools:replace="android:theme"
-        ...
+    private WebView webView;
+    private ValueCallback<Uri[]> fileUploadCallback;
+    private static final int FILE_CHOOSER_REQUEST = 1001;
+
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        webView = findViewById(R.id.webView);
+        
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        
+        webView.setWebViewClient(new WebViewClient());
+        
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, 
+                    ValueCallback<Uri[]> filePathCallback,
+                    FileChooserParams fileChooserParams) {
+                fileUploadCallback = filePathCallback;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+                return true;
+            }
+        });
+        
+        // Load from assets
+        webView.loadUrl("file:///android_asset/smm-panel/index.html");
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_CHOOSER_REQUEST && fileUploadCallback != null) {
+            Uri[] result = null;
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                result = new Uri[]{data.getData()};
+            }
+            fileUploadCallback.onReceiveValue(result);
+            fileUploadCallback = null;
+        }
+    }
+    
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+}
 ```
 
-**Option D: Clean & Rebuild Project**
-```bash
-# Di Android Studio Terminal
-./gradlew clean
-./gradlew build
-```
+---
 
-Atau dari menu: **Build > Clean Project** lalu **Build > Rebuild Project**
+### 📋 activity_main.xml yang SIMPLE
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
+```
 
 ---
 
