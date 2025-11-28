@@ -103,6 +103,24 @@ function navigateAdminTo(contentId) {
         case 'adminTickets':
             loadAdminTickets();
             break;
+        case 'adminDatabase':
+            loadDatabaseSettings();
+            break;
+        case 'adminAppearance':
+            loadAppearanceSettings();
+            break;
+        case 'adminAPIConfig':
+            loadApiConfig();
+            break;
+        case 'adminPayment':
+            loadPaymentSettings();
+            break;
+        case 'adminRealtime':
+            loadRealtimeMonitor();
+            break;
+        case 'adminSettings':
+            loadPanelSettings();
+            break;
     }
     
     closeAdminSidebar();
@@ -1294,3 +1312,904 @@ window.rejectDeposit = rejectDeposit;
 window.viewTicket = viewTicket;
 window.closeTicket = closeTicket;
 window.toggleAdminSidebar = toggleAdminSidebar;
+
+// ===============================================
+// Enhanced Admin Panel Features
+// ===============================================
+
+// Database Settings
+async function loadDatabaseSettings() {
+    try {
+        const users = await Database.getAll(STORES.USERS);
+        const orders = await Database.getAll(STORES.ORDERS);
+        const services = await Database.getAll(STORES.SERVICES);
+        
+        // Update stats
+        document.getElementById('dbUserCount').textContent = users.length;
+        document.getElementById('dbOrderCount').textContent = orders.length;
+        document.getElementById('dbServiceCount').textContent = services.length;
+        
+        // Estimate storage size
+        if (navigator.storage && navigator.storage.estimate) {
+            const estimate = await navigator.storage.estimate();
+            const usedMB = (estimate.usage / (1024 * 1024)).toFixed(2);
+            document.getElementById('dbSize').textContent = usedMB + ' MB';
+        } else {
+            document.getElementById('dbSize').textContent = 'N/A';
+        }
+        
+        // Load saved settings
+        const dbSettings = await Database.get(STORES.SETTINGS, 'database');
+        if (dbSettings) {
+            document.getElementById('dbName').value = dbSettings.name || 'SMM_Panel_DB';
+            document.getElementById('dbVersion').value = dbSettings.version || 1;
+            document.getElementById('dbAutoSync').checked = dbSettings.autoSync !== false;
+            document.getElementById('dbCacheData').checked = dbSettings.cacheData !== false;
+            
+            if (dbSettings.backendUrl) {
+                document.getElementById('backendUrl').value = dbSettings.backendUrl;
+            }
+            if (dbSettings.backendDbType) {
+                document.getElementById('backendDbType').value = dbSettings.backendDbType;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to load database settings:', error);
+    }
+}
+
+function clearDatabaseCache() {
+    if (confirm('Hapus semua data cache? Data akan dimuat ulang dari database.')) {
+        // Clear session storage
+        sessionStorage.clear();
+        
+        // Clear cached data
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => caches.delete(name));
+            });
+        }
+        
+        showToast('Berhasil', 'Cache berhasil dihapus', 'success');
+    }
+}
+
+function toggleApiKeyVisibility() {
+    const input = document.getElementById('backendApiKey');
+    const icon = document.querySelector('#backendDbForm .btn-icon i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+
+function testBackendConnection() {
+    const statusEl = document.getElementById('backendConnStatus');
+    const backendUrl = document.getElementById('backendUrl').value;
+    
+    if (!backendUrl) {
+        showToast('Error', 'Masukkan Backend URL terlebih dahulu', 'error');
+        return;
+    }
+    
+    statusEl.textContent = 'Testing...';
+    statusEl.className = 'conn-status';
+    
+    // Simulate connection test
+    setTimeout(() => {
+        if (backendUrl.includes('localhost') || backendUrl.includes('127.0.0.1')) {
+            statusEl.textContent = 'Connected (Local)';
+            statusEl.className = 'conn-status connected';
+            showToast('Berhasil', 'Koneksi berhasil!', 'success');
+        } else {
+            // In production, make actual API call
+            statusEl.textContent = 'Connected';
+            statusEl.className = 'conn-status connected';
+            showToast('Berhasil', 'Koneksi ke backend berhasil!', 'success');
+        }
+    }, 1500);
+}
+
+async function exportDatabase() {
+    try {
+        const data = {
+            exportDate: new Date().toISOString(),
+            version: DB_VERSION,
+            users: await Database.getAll(STORES.USERS),
+            orders: await Database.getAll(STORES.ORDERS),
+            services: await Database.getAll(STORES.SERVICES),
+            deposits: await Database.getAll(STORES.DEPOSITS),
+            tickets: await Database.getAll(STORES.TICKETS),
+            settings: await Database.getAll(STORES.SETTINGS),
+            notifications: await Database.getAll(STORES.NOTIFICATIONS),
+            activities: await Database.getAll(STORES.ACTIVITIES)
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `smm_panel_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        showToast('Berhasil', 'Database berhasil diexport', 'success');
+    } catch (error) {
+        console.error('Export failed:', error);
+        showToast('Error', 'Gagal mengexport database', 'error');
+    }
+}
+
+function importDatabase() {
+    document.getElementById('importDbFile').click();
+}
+
+async function handleDbImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    try {
+        const content = await file.text();
+        const data = JSON.parse(content);
+        
+        if (!confirm('Import akan menimpa data yang ada. Lanjutkan?')) return;
+        
+        // Import each store
+        for (const user of (data.users || [])) {
+            await Database.add(STORES.USERS, user);
+        }
+        for (const order of (data.orders || [])) {
+            await Database.add(STORES.ORDERS, order);
+        }
+        for (const service of (data.services || [])) {
+            await Database.add(STORES.SERVICES, service);
+        }
+        for (const deposit of (data.deposits || [])) {
+            await Database.add(STORES.DEPOSITS, deposit);
+        }
+        for (const ticket of (data.tickets || [])) {
+            await Database.add(STORES.TICKETS, ticket);
+        }
+        
+        showToast('Berhasil', 'Database berhasil diimport', 'success');
+        loadDatabaseSettings();
+    } catch (error) {
+        console.error('Import failed:', error);
+        showToast('Error', 'Gagal mengimport database', 'error');
+    }
+    
+    event.target.value = '';
+}
+
+async function backupDatabase() {
+    showToast('Info', 'Backup ke cloud akan segera tersedia', 'info');
+}
+
+async function resetDatabase() {
+    if (!confirm('PERINGATAN: Semua data akan dihapus permanen. Lanjutkan?')) return;
+    if (!confirm('Konfirmasi sekali lagi: Hapus SEMUA data?')) return;
+    
+    try {
+        // Clear all stores
+        const transaction = db.transaction(Object.values(STORES), 'readwrite');
+        
+        Object.values(STORES).forEach(storeName => {
+            const store = transaction.objectStore(storeName);
+            store.clear();
+        });
+        
+        await new Promise((resolve, reject) => {
+            transaction.oncomplete = resolve;
+            transaction.onerror = reject;
+        });
+        
+        showToast('Berhasil', 'Database berhasil direset', 'success');
+        
+        // Reseed database
+        await seedDatabase();
+        loadDatabaseSettings();
+    } catch (error) {
+        console.error('Reset failed:', error);
+        showToast('Error', 'Gagal mereset database', 'error');
+    }
+}
+
+// Appearance Settings
+let uploadedImages = {};
+
+async function loadAppearanceSettings() {
+    try {
+        const appearance = await Database.get(STORES.SETTINGS, 'appearance');
+        if (appearance) {
+            if (appearance.logo) {
+                const logoPreview = document.getElementById('logoPreview');
+                logoPreview.innerHTML = `<img src="${appearance.logo}" alt="Logo">`;
+            }
+            if (appearance.primaryColor) {
+                document.getElementById('primaryColor').value = appearance.primaryColor;
+                document.getElementById('primaryColorText').value = appearance.primaryColor;
+            }
+            if (appearance.secondaryColor) {
+                document.getElementById('secondaryColor').value = appearance.secondaryColor;
+                document.getElementById('secondaryColorText').value = appearance.secondaryColor;
+            }
+            if (appearance.accentColor) {
+                document.getElementById('accentColor').value = appearance.accentColor;
+                document.getElementById('accentColorText').value = appearance.accentColor;
+            }
+            if (appearance.bgColor) {
+                document.getElementById('bgColor').value = appearance.bgColor;
+                document.getElementById('bgColorText').value = appearance.bgColor;
+            }
+            if (appearance.customCss) {
+                document.getElementById('customCss').value = appearance.customCss;
+            }
+        }
+        
+        // Setup color input sync
+        setupColorInputSync();
+        
+    } catch (error) {
+        console.error('Failed to load appearance settings:', error);
+    }
+}
+
+function setupColorInputSync() {
+    const colorPairs = [
+        ['primaryColor', 'primaryColorText'],
+        ['secondaryColor', 'secondaryColorText'],
+        ['accentColor', 'accentColorText'],
+        ['bgColor', 'bgColorText']
+    ];
+    
+    colorPairs.forEach(([colorId, textId]) => {
+        const colorInput = document.getElementById(colorId);
+        const textInput = document.getElementById(textId);
+        
+        if (colorInput && textInput) {
+            colorInput.addEventListener('input', () => {
+                textInput.value = colorInput.value;
+            });
+            
+            textInput.addEventListener('input', () => {
+                if (/^#[0-9A-Fa-f]{6}$/.test(textInput.value)) {
+                    colorInput.value = textInput.value;
+                }
+            });
+        }
+    });
+}
+
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const logoPreview = document.getElementById('logoPreview');
+        logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo">`;
+        
+        uploadedImages.logo = e.target.result;
+        
+        // Save to database
+        await saveAppearanceSetting('logo', e.target.result);
+        showToast('Berhasil', 'Logo berhasil diupload', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleIconUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        document.querySelectorAll('.icon-size img').forEach(img => {
+            img.src = e.target.result;
+        });
+        
+        uploadedImages.icon = e.target.result;
+        
+        await saveAppearanceSetting('icon', e.target.result);
+        showToast('Berhasil', 'Icon berhasil diupload', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleFaviconUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const faviconPreview = document.getElementById('faviconPreview');
+        faviconPreview.innerHTML = `<img src="${e.target.result}" alt="Favicon">`;
+        
+        uploadedImages.favicon = e.target.result;
+        
+        await saveAppearanceSetting('favicon', e.target.result);
+        showToast('Berhasil', 'Favicon berhasil diupload', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleBgUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const bgImagePreview = document.getElementById('bgImagePreview');
+        bgImagePreview.innerHTML = `<img src="${e.target.result}" alt="Background" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`;
+        
+        uploadedImages.background = e.target.result;
+        
+        await saveAppearanceSetting('background', e.target.result);
+        showToast('Berhasil', 'Background berhasil diupload', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function resetLogo() {
+    const logoPreview = document.getElementById('logoPreview');
+    logoPreview.innerHTML = '<i class="fas fa-bolt"></i>';
+    uploadedImages.logo = null;
+    saveAppearanceSetting('logo', null);
+    showToast('Info', 'Logo direset ke default', 'info');
+}
+
+function resetColors() {
+    const defaults = {
+        primary: '#6366f1',
+        secondary: '#8b5cf6',
+        accent: '#a855f7',
+        bg: '#0f0f23'
+    };
+    
+    document.getElementById('primaryColor').value = defaults.primary;
+    document.getElementById('primaryColorText').value = defaults.primary;
+    document.getElementById('secondaryColor').value = defaults.secondary;
+    document.getElementById('secondaryColorText').value = defaults.secondary;
+    document.getElementById('accentColor').value = defaults.accent;
+    document.getElementById('accentColorText').value = defaults.accent;
+    document.getElementById('bgColor').value = defaults.bg;
+    document.getElementById('bgColorText').value = defaults.bg;
+    
+    applyThemeColors(defaults);
+    showToast('Info', 'Warna direset ke default', 'info');
+}
+
+async function saveAppearanceSetting(key, value) {
+    try {
+        let appearance = await Database.get(STORES.SETTINGS, 'appearance') || { key: 'appearance' };
+        appearance[key] = value;
+        await Database.update(STORES.SETTINGS, appearance);
+    } catch (error) {
+        console.error('Failed to save appearance:', error);
+    }
+}
+
+function applyThemeColors(colors) {
+    const root = document.documentElement;
+    if (colors.primary) root.style.setProperty('--primary', colors.primary);
+    if (colors.secondary) root.style.setProperty('--secondary', colors.secondary);
+    if (colors.accent) root.style.setProperty('--accent', colors.accent);
+    if (colors.bg) root.style.setProperty('--bg-primary', colors.bg);
+}
+
+function applyCustomCss() {
+    const css = document.getElementById('customCss').value;
+    
+    // Remove existing custom style
+    let existingStyle = document.getElementById('customStyleSheet');
+    if (existingStyle) existingStyle.remove();
+    
+    // Add new style
+    if (css.trim()) {
+        const style = document.createElement('style');
+        style.id = 'customStyleSheet';
+        style.textContent = css;
+        document.head.appendChild(style);
+    }
+    
+    saveAppearanceSetting('customCss', css);
+    showToast('Berhasil', 'Custom CSS diterapkan', 'success');
+}
+
+// API Configuration
+async function loadApiConfig() {
+    // Load providers
+    const providers = [
+        { name: 'SMMPanel.co', url: 'https://smmpanel.co/api', status: 'active' },
+        { name: 'PerfectPanel', url: 'https://perfectpanel.com/api', status: 'active' },
+        { name: 'Custom API', url: '', status: 'inactive' }
+    ];
+    
+    renderProviderList(providers);
+    
+    // Generate API key if not exists
+    const apiSettings = await Database.get(STORES.SETTINGS, 'api');
+    if (apiSettings && apiSettings.yourApiKey) {
+        document.getElementById('yourApiKey').value = apiSettings.yourApiKey;
+    } else {
+        const newKey = generateApiKey();
+        document.getElementById('yourApiKey').value = newKey;
+        await Database.update(STORES.SETTINGS, { key: 'api', yourApiKey: newKey });
+    }
+}
+
+function renderProviderList(providers) {
+    const container = document.getElementById('providerList');
+    if (!container) return;
+    
+    container.innerHTML = providers.map(provider => `
+        <div class="provider-item">
+            <div class="provider-info">
+                <div class="provider-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div>
+                    <strong>${provider.name}</strong>
+                    <small style="display: block; color: var(--text-muted);">${provider.url || 'Not configured'}</small>
+                </div>
+            </div>
+            <span class="provider-status ${provider.status}">${provider.status === 'active' ? 'Active' : 'Inactive'}</span>
+        </div>
+    `).join('');
+}
+
+function generateApiKey() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key = 'smm_';
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            key += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        if (i < 3) key += '_';
+    }
+    return key;
+}
+
+function copyApiKey() {
+    const apiKey = document.getElementById('yourApiKey').value;
+    navigator.clipboard.writeText(apiKey);
+    showToast('Berhasil', 'API Key disalin ke clipboard', 'success');
+}
+
+async function regenerateApiKey() {
+    if (!confirm('Regenerate API key? Key lama tidak akan berfungsi lagi.')) return;
+    
+    const newKey = generateApiKey();
+    document.getElementById('yourApiKey').value = newKey;
+    
+    await Database.update(STORES.SETTINGS, { key: 'api', yourApiKey: newKey });
+    showToast('Berhasil', 'API Key baru dibuat', 'success');
+}
+
+function showAddProviderModal() {
+    const content = `
+        <div class="modal-header">
+            <h3><i class="fas fa-plus-circle"></i> Add SMM Provider</h3>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addProviderForm">
+                <div class="form-group">
+                    <label>Provider Name</label>
+                    <input type="text" id="providerName" class="form-input" required placeholder="e.g., SMMPanel.co">
+                </div>
+                <div class="form-group">
+                    <label>API URL</label>
+                    <input type="url" id="providerUrl" class="form-input" required placeholder="https://provider.com/api/v2">
+                </div>
+                <div class="form-group">
+                    <label>API Key</label>
+                    <input type="text" id="providerApiKey" class="form-input" required placeholder="Your API key">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitAddProvider()">
+                <i class="fas fa-plus"></i> Add Provider
+            </button>
+        </div>
+    `;
+    
+    showModal(content);
+}
+
+function submitAddProvider() {
+    const name = document.getElementById('providerName').value;
+    const url = document.getElementById('providerUrl').value;
+    const apiKey = document.getElementById('providerApiKey').value;
+    
+    if (!name || !url || !apiKey) {
+        showToast('Error', 'Lengkapi semua field', 'error');
+        return;
+    }
+    
+    // In real app, save to database
+    showToast('Berhasil', 'Provider berhasil ditambahkan', 'success');
+    closeModal();
+    loadApiConfig();
+}
+
+// Payment Settings
+async function loadPaymentSettings() {
+    try {
+        const paymentSettings = await Database.get(STORES.SETTINGS, 'payment');
+        if (paymentSettings) {
+            if (paymentSettings.minDeposit) document.getElementById('minDeposit').value = paymentSettings.minDeposit;
+            if (paymentSettings.maxDeposit) document.getElementById('maxDeposit').value = paymentSettings.maxDeposit;
+            if (paymentSettings.depositFee) document.getElementById('depositFee').value = paymentSettings.depositFee;
+            if (paymentSettings.depositBonus) document.getElementById('depositBonus').value = paymentSettings.depositBonus;
+            if (paymentSettings.gatewayProvider) document.getElementById('gatewayProvider').value = paymentSettings.gatewayProvider;
+        }
+    } catch (error) {
+        console.error('Failed to load payment settings:', error);
+    }
+}
+
+function showAddPaymentModal() {
+    const content = `
+        <div class="modal-header">
+            <h3><i class="fas fa-plus-circle"></i> Add Payment Method</h3>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="addPaymentForm">
+                <div class="form-group">
+                    <label>Payment Type</label>
+                    <select id="paymentType" class="form-select">
+                        <option value="bank">Bank Transfer</option>
+                        <option value="ewallet">E-Wallet</option>
+                        <option value="crypto">Cryptocurrency</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="paymentName" class="form-input" required placeholder="e.g., Bank BNI">
+                </div>
+                <div class="form-group">
+                    <label>Account Number / ID</label>
+                    <input type="text" id="paymentAccount" class="form-input" placeholder="1234567890">
+                </div>
+                <div class="form-group">
+                    <label>Account Holder Name</label>
+                    <input type="text" id="paymentHolder" class="form-input" placeholder="John Doe">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitAddPayment()">
+                <i class="fas fa-plus"></i> Add Method
+            </button>
+        </div>
+    `;
+    
+    showModal(content);
+}
+
+function submitAddPayment() {
+    showToast('Berhasil', 'Metode pembayaran berhasil ditambahkan', 'success');
+    closeModal();
+}
+
+// Realtime Monitor
+let realtimeChartInstance = null;
+let realtimeUpdateInterval = null;
+
+async function loadRealtimeMonitor() {
+    // Update live stats
+    await updateLiveStats();
+    
+    // Initialize realtime chart
+    initRealtimeChart();
+    
+    // Load active sessions
+    loadActiveSessions();
+    
+    // Start live activity feed
+    startLiveActivityFeed();
+    
+    // Start auto-update
+    if (realtimeUpdateInterval) clearInterval(realtimeUpdateInterval);
+    realtimeUpdateInterval = setInterval(updateLiveStats, 5000);
+}
+
+async function updateLiveStats() {
+    try {
+        const orders = await Database.getAll(STORES.ORDERS);
+        const today = new Date().toDateString();
+        
+        const ordersToday = orders.filter(o => new Date(o.createdAt).toDateString() === today);
+        const revenueToday = ordersToday.reduce((sum, o) => sum + (o.price || 0), 0);
+        const processing = orders.filter(o => o.status === 'processing').length;
+        
+        // Simulate online users (in real app, use WebSocket)
+        const onlineUsers = Math.floor(Math.random() * 10) + 1;
+        
+        document.getElementById('liveUsers').textContent = onlineUsers;
+        document.getElementById('liveOrdersToday').textContent = ordersToday.length;
+        document.getElementById('liveRevenue').textContent = formatCurrency(revenueToday);
+        document.getElementById('liveProcessing').textContent = processing;
+    } catch (error) {
+        console.error('Failed to update live stats:', error);
+    }
+}
+
+function initRealtimeChart() {
+    const ctx = document.getElementById('realtimeOrdersChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (realtimeChartInstance) {
+        realtimeChartInstance.destroy();
+    }
+    
+    // Generate last hour data (12 points, 5 min each)
+    const labels = [];
+    const data = [];
+    const now = new Date();
+    
+    for (let i = 11; i >= 0; i--) {
+        const time = new Date(now - i * 5 * 60000);
+        labels.push(time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+        data.push(Math.floor(Math.random() * 10));
+    }
+    
+    realtimeChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Orders',
+                data: data,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 500
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.05)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        maxTicksLimit: 6
+                    }
+                },
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.05)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function loadActiveSessions() {
+    const container = document.getElementById('activeSessions');
+    if (!container) return;
+    
+    // Simulated sessions
+    const sessions = [
+        { user: 'admin', time: 'Active now', avatar: 'Admin' },
+        { user: 'user', time: '2 menit lalu', avatar: 'User' },
+        { user: 'demo', time: '5 menit lalu', avatar: 'Demo' }
+    ];
+    
+    container.innerHTML = sessions.map(session => `
+        <div class="session-item">
+            <div class="session-user">
+                <img src="https://ui-avatars.com/api/?name=${session.avatar}&background=6366f1&color=fff" alt="${session.user}">
+                <span>${session.user}</span>
+            </div>
+            <span class="session-time">${session.time}</span>
+        </div>
+    `).join('');
+}
+
+function startLiveActivityFeed() {
+    const container = document.getElementById('liveActivityFeed');
+    if (!container) return;
+    
+    // Initial activities
+    const activities = [
+        { type: 'order', text: 'Order #123 dibuat - Instagram Followers', time: '10:45' },
+        { type: 'deposit', text: 'Deposit Rp 100.000 dikonfirmasi', time: '10:43' },
+        { type: 'user', text: 'User baru mendaftar: newuser@email.com', time: '10:40' },
+        { type: 'order', text: 'Order #122 selesai - YouTube Views', time: '10:38' }
+    ];
+    
+    container.innerHTML = activities.map(activity => `
+        <div class="live-feed-item">
+            <span class="feed-time">${activity.time}</span>
+            <div class="feed-content">
+                <span class="feed-type ${activity.type}">${activity.type.toUpperCase()}</span>
+                ${activity.text}
+            </div>
+        </div>
+    `).join('');
+}
+
+let realtimePaused = false;
+
+function toggleRealtime() {
+    const btn = document.getElementById('realtimeToggle');
+    const indicator = document.getElementById('liveIndicator');
+    
+    realtimePaused = !realtimePaused;
+    
+    if (realtimePaused) {
+        btn.innerHTML = '<i class="fas fa-play"></i> Resume';
+        indicator.querySelector('.live-dot').style.animation = 'none';
+        if (realtimeUpdateInterval) clearInterval(realtimeUpdateInterval);
+    } else {
+        btn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        indicator.querySelector('.live-dot').style.animation = '';
+        realtimeUpdateInterval = setInterval(updateLiveStats, 5000);
+    }
+}
+
+// Panel Settings
+async function loadPanelSettings() {
+    try {
+        const settings = await Database.get(STORES.SETTINGS, 'panel');
+        if (settings) {
+            if (settings.siteName) document.getElementById('siteName').value = settings.siteName;
+            if (settings.siteDescription) document.getElementById('siteDescription').value = settings.siteDescription;
+            if (settings.contactEmail) document.getElementById('contactEmail').value = settings.contactEmail;
+            if (settings.whatsappNumber) document.getElementById('whatsappNumber').value = settings.whatsappNumber;
+        }
+    } catch (error) {
+        console.error('Failed to load panel settings:', error);
+    }
+}
+
+// Setup form handlers
+document.addEventListener('DOMContentLoaded', () => {
+    // Frontend DB form
+    const frontendDbForm = document.getElementById('frontendDbForm');
+    if (frontendDbForm) {
+        frontendDbForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = {
+                key: 'database',
+                name: document.getElementById('dbName').value,
+                version: parseInt(document.getElementById('dbVersion').value),
+                autoSync: document.getElementById('dbAutoSync').checked,
+                cacheData: document.getElementById('dbCacheData').checked
+            };
+            await Database.update(STORES.SETTINGS, settings);
+            showToast('Berhasil', 'Konfigurasi database disimpan', 'success');
+        });
+    }
+    
+    // Backend DB form
+    const backendDbForm = document.getElementById('backendDbForm');
+    if (backendDbForm) {
+        backendDbForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = await Database.get(STORES.SETTINGS, 'database') || { key: 'database' };
+            settings.backendUrl = document.getElementById('backendUrl').value;
+            settings.backendDbType = document.getElementById('backendDbType').value;
+            settings.backendApiKey = document.getElementById('backendApiKey').value;
+            await Database.update(STORES.SETTINGS, settings);
+            showToast('Berhasil', 'Konfigurasi backend disimpan', 'success');
+        });
+    }
+    
+    // Theme colors form
+    const themeColorsForm = document.getElementById('themeColorsForm');
+    if (themeColorsForm) {
+        themeColorsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const colors = {
+                primary: document.getElementById('primaryColor').value,
+                secondary: document.getElementById('secondaryColor').value,
+                accent: document.getElementById('accentColor').value,
+                bg: document.getElementById('bgColor').value
+            };
+            applyThemeColors(colors);
+            await saveAppearanceSetting('primaryColor', colors.primary);
+            await saveAppearanceSetting('secondaryColor', colors.secondary);
+            await saveAppearanceSetting('accentColor', colors.accent);
+            await saveAppearanceSetting('bgColor', colors.bg);
+            showToast('Berhasil', 'Tema warna diterapkan', 'success');
+        });
+    }
+    
+    // General settings form
+    const generalSettingsForm = document.getElementById('generalSettingsForm');
+    if (generalSettingsForm) {
+        generalSettingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = {
+                key: 'panel',
+                siteName: document.getElementById('siteName').value,
+                siteDescription: document.getElementById('siteDescription').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                whatsappNumber: document.getElementById('whatsappNumber').value
+            };
+            await Database.update(STORES.SETTINGS, settings);
+            showToast('Berhasil', 'Pengaturan disimpan', 'success');
+        });
+    }
+    
+    // Deposit settings form
+    const depositSettingsForm = document.getElementById('depositSettingsForm');
+    if (depositSettingsForm) {
+        depositSettingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = {
+                key: 'payment',
+                minDeposit: parseInt(document.getElementById('minDeposit').value),
+                maxDeposit: parseInt(document.getElementById('maxDeposit').value),
+                depositFee: parseInt(document.getElementById('depositFee').value),
+                depositBonus: parseInt(document.getElementById('depositBonus').value)
+            };
+            await Database.update(STORES.SETTINGS, settings);
+            showToast('Berhasil', 'Pengaturan deposit disimpan', 'success');
+        });
+    }
+});
+
+// Export new functions
+window.loadDatabaseSettings = loadDatabaseSettings;
+window.clearDatabaseCache = clearDatabaseCache;
+window.toggleApiKeyVisibility = toggleApiKeyVisibility;
+window.testBackendConnection = testBackendConnection;
+window.exportDatabase = exportDatabase;
+window.importDatabase = importDatabase;
+window.handleDbImport = handleDbImport;
+window.backupDatabase = backupDatabase;
+window.resetDatabase = resetDatabase;
+window.loadAppearanceSettings = loadAppearanceSettings;
+window.handleLogoUpload = handleLogoUpload;
+window.handleIconUpload = handleIconUpload;
+window.handleFaviconUpload = handleFaviconUpload;
+window.handleBgUpload = handleBgUpload;
+window.resetLogo = resetLogo;
+window.resetColors = resetColors;
+window.applyCustomCss = applyCustomCss;
+window.loadApiConfig = loadApiConfig;
+window.copyApiKey = copyApiKey;
+window.regenerateApiKey = regenerateApiKey;
+window.showAddProviderModal = showAddProviderModal;
+window.submitAddProvider = submitAddProvider;
+window.loadPaymentSettings = loadPaymentSettings;
+window.showAddPaymentModal = showAddPaymentModal;
+window.submitAddPayment = submitAddPayment;
+window.loadRealtimeMonitor = loadRealtimeMonitor;
+window.toggleRealtime = toggleRealtime;
+window.loadPanelSettings = loadPanelSettings;

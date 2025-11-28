@@ -782,6 +782,32 @@
                         <i class="fas fa-ticket-alt"></i>
                         <span>Tickets</span>
                     </a>
+                    
+                    <!-- Divider -->
+                    <div class="nav-divider">
+                        <span>Configuration</span>
+                    </div>
+                    
+                    <a href="#" class="nav-item" data-page="adminDatabase">
+                        <i class="fas fa-database"></i>
+                        <span>Database</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminAppearance">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>Appearance</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminAPIConfig">
+                        <i class="fas fa-code"></i>
+                        <span>API Config</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminPayment">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Payment</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="adminRealtime">
+                        <i class="fas fa-broadcast-tower"></i>
+                        <span>Real-time</span>
+                    </a>
                     <a href="#" class="nav-item" data-page="adminSettings">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
@@ -1024,9 +1050,644 @@
                                     </tr>
                                 </thead>
                                 <tbody id="ticketsTableBody">
-                                    <!-- Tickets will be rendered here -->
+                                        <!-- Tickets will be rendered here -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Database Settings -->
+                <div id="adminDatabase" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-database"></i> Database Settings</h2>
+                    </div>
+                    <div class="database-grid">
+                        <!-- Database Status Card -->
+                        <div class="db-card glass-morphism">
+                            <div class="db-card-header">
+                                <h3><i class="fas fa-server"></i> Database Status</h3>
+                                <span class="status-indicator online" id="dbStatus">Online</span>
+                            </div>
+                            <div class="db-stats">
+                                <div class="db-stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <div>
+                                        <span class="stat-value" id="dbUserCount">0</span>
+                                        <span class="stat-label">Users</span>
+                                    </div>
+                                </div>
+                                <div class="db-stat-item">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <div>
+                                        <span class="stat-value" id="dbOrderCount">0</span>
+                                        <span class="stat-label">Orders</span>
+                                    </div>
+                                </div>
+                                <div class="db-stat-item">
+                                    <i class="fas fa-server"></i>
+                                    <div>
+                                        <span class="stat-value" id="dbServiceCount">0</span>
+                                        <span class="stat-label">Services</span>
+                                    </div>
+                                </div>
+                                <div class="db-stat-item">
+                                    <i class="fas fa-hdd"></i>
+                                    <div>
+                                        <span class="stat-value" id="dbSize">0 KB</span>
+                                        <span class="stat-label">Storage</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Frontend Database Config -->
+                        <div class="db-card glass-morphism">
+                            <h3><i class="fas fa-laptop-code"></i> Frontend Database (IndexedDB)</h3>
+                            <form id="frontendDbForm" class="db-form">
+                                <div class="form-group">
+                                    <label>Database Name</label>
+                                    <input type="text" id="dbName" class="form-input" value="SMM_Panel_DB">
+                                </div>
+                                <div class="form-group">
+                                    <label>Database Version</label>
+                                    <input type="number" id="dbVersion" class="form-input" value="1" min="1">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Auto Sync</label>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="dbAutoSync" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cache Data</label>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="dbCacheData" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Save Config
+                                    </button>
+                                    <button type="button" class="btn btn-warning" onclick="clearDatabaseCache()">
+                                        <i class="fas fa-broom"></i> Clear Cache
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Backend API Database Config -->
+                        <div class="db-card glass-morphism">
+                            <h3><i class="fas fa-cloud"></i> Backend Database (API)</h3>
+                            <form id="backendDbForm" class="db-form">
+                                <div class="form-group">
+                                    <label>Backend URL</label>
+                                    <input type="url" id="backendUrl" class="form-input" placeholder="https://api.yourserver.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Database Type</label>
+                                    <select id="backendDbType" class="form-select">
+                                        <option value="mysql">MySQL</option>
+                                        <option value="postgresql">PostgreSQL</option>
+                                        <option value="mongodb">MongoDB</option>
+                                        <option value="firebase">Firebase</option>
+                                        <option value="supabase">Supabase</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>API Key</label>
+                                    <div class="input-with-btn">
+                                        <input type="password" id="backendApiKey" class="form-input" placeholder="Your API key">
+                                        <button type="button" class="btn-icon" onclick="toggleApiKeyVisibility()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Connection Status</label>
+                                    <div class="connection-test">
+                                        <span id="backendConnStatus" class="conn-status disconnected">Not Connected</span>
+                                        <button type="button" class="btn btn-sm btn-info" onclick="testBackendConnection()">
+                                            <i class="fas fa-plug"></i> Test Connection
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Backend Config
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Database Actions -->
+                        <div class="db-card glass-morphism">
+                            <h3><i class="fas fa-tools"></i> Database Actions</h3>
+                            <div class="db-actions">
+                                <button class="action-card" onclick="exportDatabase()">
+                                    <i class="fas fa-download"></i>
+                                    <span>Export Data</span>
+                                    <small>Download as JSON</small>
+                                </button>
+                                <button class="action-card" onclick="importDatabase()">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Import Data</span>
+                                    <small>Upload JSON file</small>
+                                </button>
+                                <button class="action-card" onclick="backupDatabase()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Backup</span>
+                                    <small>Save to cloud</small>
+                                </button>
+                                <button class="action-card danger" onclick="resetDatabase()">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Reset Database</span>
+                                    <small>Delete all data</small>
+                                </button>
+                            </div>
+                            <input type="file" id="importDbFile" accept=".json" style="display: none;" onchange="handleDbImport(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Appearance Settings -->
+                <div id="adminAppearance" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-paint-brush"></i> Appearance Settings</h2>
+                    </div>
+                    <div class="appearance-grid">
+                        <!-- Logo & Icon Settings -->
+                        <div class="appearance-card glass-morphism">
+                            <h3><i class="fas fa-image"></i> Logo & Icon</h3>
+                            <div class="logo-settings">
+                                <div class="logo-preview-container">
+                                    <div class="logo-preview" id="logoPreview">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="logo-actions">
+                                        <label class="btn btn-primary">
+                                            <i class="fas fa-upload"></i> Upload Logo
+                                            <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+                                        </label>
+                                        <button class="btn btn-secondary" onclick="resetLogo()">
+                                            <i class="fas fa-undo"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="icon-preview-container">
+                                    <p>App Icon (PWA)</p>
+                                    <div class="icon-sizes">
+                                        <div class="icon-size" id="icon192Preview">
+                                            <img src="icons/icon-192.svg" alt="192x192">
+                                            <span>192x192</span>
+                                        </div>
+                                        <div class="icon-size" id="icon512Preview">
+                                            <img src="icons/icon-192.svg" alt="512x512">
+                                            <span>512x512</span>
+                                        </div>
+                                    </div>
+                                    <label class="btn btn-primary btn-sm">
+                                        <i class="fas fa-upload"></i> Upload Icon
+                                        <input type="file" id="iconUpload" accept="image/*" style="display: none;" onchange="handleIconUpload(event)">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favicon Settings -->
+                        <div class="appearance-card glass-morphism">
+                            <h3><i class="fas fa-bookmark"></i> Favicon</h3>
+                            <div class="favicon-settings">
+                                <div class="favicon-preview" id="faviconPreview">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="form-group">
+                                    <label>Upload Favicon (32x32 recommended)</label>
+                                    <label class="btn btn-primary">
+                                        <i class="fas fa-upload"></i> Upload Favicon
+                                        <input type="file" id="faviconUpload" accept="image/*,.ico" style="display: none;" onchange="handleFaviconUpload(event)">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Theme Colors -->
+                        <div class="appearance-card glass-morphism">
+                            <h3><i class="fas fa-palette"></i> Theme Colors</h3>
+                            <form id="themeColorsForm">
+                                <div class="color-picker-grid">
+                                    <div class="color-picker-item">
+                                        <label>Primary Color</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="primaryColor" value="#6366f1">
+                                            <input type="text" class="form-input" value="#6366f1" id="primaryColorText">
+                                        </div>
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label>Secondary Color</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="secondaryColor" value="#8b5cf6">
+                                            <input type="text" class="form-input" value="#8b5cf6" id="secondaryColorText">
+                                        </div>
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label>Accent Color</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="accentColor" value="#a855f7">
+                                            <input type="text" class="form-input" value="#a855f7" id="accentColorText">
+                                        </div>
+                                    </div>
+                                    <div class="color-picker-item">
+                                        <label>Background Color</label>
+                                        <div class="color-input-wrapper">
+                                            <input type="color" id="bgColor" value="#0f0f23">
+                                            <input type="text" class="form-input" value="#0f0f23" id="bgColorText">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Apply Colors
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="resetColors()">
+                                        <i class="fas fa-undo"></i> Reset Default
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Background Image Settings -->
+                        <div class="appearance-card glass-morphism full-width">
+                            <h3><i class="fas fa-images"></i> Background Settings</h3>
+                            <div class="bg-settings">
+                                <div class="bg-type-selector">
+                                    <label class="bg-type-option">
+                                        <input type="radio" name="bgType" value="gradient" checked>
+                                        <span class="bg-preview gradient-preview"></span>
+                                        <span>Gradient</span>
+                                    </label>
+                                    <label class="bg-type-option">
+                                        <input type="radio" name="bgType" value="image">
+                                        <span class="bg-preview image-preview" id="bgImagePreview">
+                                            <i class="fas fa-image"></i>
+                                        </span>
+                                        <span>Image</span>
+                                    </label>
+                                    <label class="bg-type-option">
+                                        <input type="radio" name="bgType" value="video">
+                                        <span class="bg-preview video-preview">
+                                            <i class="fas fa-video"></i>
+                                        </span>
+                                        <span>Video</span>
+                                    </label>
+                                </div>
+                                <div class="bg-upload-area" id="bgUploadArea">
+                                    <label class="upload-zone" id="bgDropZone">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Drag & drop image/video or click to upload</p>
+                                        <input type="file" id="bgUpload" accept="image/*,video/mp4" style="display: none;" onchange="handleBgUpload(event)">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom CSS -->
+                        <div class="appearance-card glass-morphism full-width">
+                            <h3><i class="fas fa-code"></i> Custom CSS</h3>
+                            <div class="custom-css-editor">
+                                <textarea id="customCss" class="code-editor" placeholder="/* Add your custom CSS here */
+.example {
+    color: #fff;
+}"></textarea>
+                                <button class="btn btn-primary" onclick="applyCustomCss()">
+                                    <i class="fas fa-check"></i> Apply CSS
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin API Configuration -->
+                <div id="adminAPIConfig" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-code"></i> API Configuration</h2>
+                    </div>
+                    <div class="api-config-grid">
+                        <!-- SMM Provider APIs -->
+                        <div class="api-card glass-morphism">
+                            <h3><i class="fas fa-plug"></i> SMM Provider APIs</h3>
+                            <div class="provider-list" id="providerList">
+                                <!-- Providers will be rendered here -->
+                            </div>
+                            <button class="btn btn-primary" onclick="showAddProviderModal()">
+                                <i class="fas fa-plus"></i> Add Provider
+                            </button>
+                        </div>
+
+                        <!-- API Keys Management -->
+                        <div class="api-card glass-morphism">
+                            <h3><i class="fas fa-key"></i> Your API Key</h3>
+                            <div class="your-api-key">
+                                <div class="api-key-display">
+                                    <input type="text" id="yourApiKey" class="form-input" readonly value="smm_xxxx_xxxx_xxxx_xxxx">
+                                    <button class="btn-icon" onclick="copyApiKey()">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="regenerateApiKey()">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                                <div class="api-usage">
+                                    <div class="usage-stat">
+                                        <span class="label">Requests Today</span>
+                                        <span class="value" id="apiRequestsToday">0</span>
+                                    </div>
+                                    <div class="usage-stat">
+                                        <span class="label">Rate Limit</span>
+                                        <span class="value" id="apiRateLimit">1000/day</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Webhook Settings -->
+                        <div class="api-card glass-morphism full-width">
+                            <h3><i class="fas fa-webhook"></i> Webhook Settings</h3>
+                            <form id="webhookForm">
+                                <div class="form-row">
+                                    <div class="form-group flex-2">
+                                        <label>Webhook URL</label>
+                                        <input type="url" id="webhookUrl" class="form-input" placeholder="https://your-server.com/webhook">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Secret Key</label>
+                                        <input type="password" id="webhookSecret" class="form-input" placeholder="Secret key">
+                                    </div>
+                                </div>
+                                <div class="webhook-events">
+                                    <label class="webhook-event">
+                                        <input type="checkbox" checked> Order Created
+                                    </label>
+                                    <label class="webhook-event">
+                                        <input type="checkbox" checked> Order Completed
+                                    </label>
+                                    <label class="webhook-event">
+                                        <input type="checkbox"> Order Cancelled
+                                    </label>
+                                    <label class="webhook-event">
+                                        <input type="checkbox" checked> Deposit Approved
+                                    </label>
+                                    <label class="webhook-event">
+                                        <input type="checkbox"> User Registered
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Webhook
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Payment Settings -->
+                <div id="adminPayment" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-credit-card"></i> Payment Settings</h2>
+                    </div>
+                    <div class="payment-grid">
+                        <!-- Payment Methods -->
+                        <div class="payment-card glass-morphism">
+                            <h3><i class="fas fa-wallet"></i> Payment Methods</h3>
+                            <div class="payment-methods" id="paymentMethods">
+                                <div class="payment-method">
+                                    <div class="method-info">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Bank_Central_Asia.svg" alt="BCA">
+                                        <span>Bank BCA</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="method-info">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Bank_Mandiri_logo_2016.svg" alt="Mandiri">
+                                        <span>Bank Mandiri</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="method-info">
+                                        <i class="fas fa-mobile-alt" style="font-size: 24px; color: #00d9ff;"></i>
+                                        <span>DANA</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="method-info">
+                                        <i class="fas fa-mobile-alt" style="font-size: 24px; color: #52b788;"></i>
+                                        <span>GoPay</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="showAddPaymentModal()">
+                                <i class="fas fa-plus"></i> Add Method
+                            </button>
+                        </div>
+
+                        <!-- Payment Gateway -->
+                        <div class="payment-card glass-morphism">
+                            <h3><i class="fas fa-cog"></i> Payment Gateway</h3>
+                            <form id="paymentGatewayForm">
+                                <div class="form-group">
+                                    <label>Gateway Provider</label>
+                                    <select id="gatewayProvider" class="form-select">
+                                        <option value="manual">Manual (Bank Transfer)</option>
+                                        <option value="midtrans">Midtrans</option>
+                                        <option value="xendit">Xendit</option>
+                                        <option value="tripay">Tripay</option>
+                                        <option value="duitku">Duitku</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Merchant ID</label>
+                                    <input type="text" id="merchantId" class="form-input" placeholder="Your merchant ID">
+                                </div>
+                                <div class="form-group">
+                                    <label>API Key</label>
+                                    <input type="password" id="gatewayApiKey" class="form-input" placeholder="Gateway API key">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mode</label>
+                                    <div class="mode-toggle">
+                                        <label class="mode-option">
+                                            <input type="radio" name="gatewayMode" value="sandbox" checked>
+                                            <span>Sandbox</span>
+                                        </label>
+                                        <label class="mode-option">
+                                            <input type="radio" name="gatewayMode" value="production">
+                                            <span>Production</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Gateway
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Deposit Settings -->
+                        <div class="payment-card glass-morphism">
+                            <h3><i class="fas fa-money-bill-wave"></i> Deposit Settings</h3>
+                            <form id="depositSettingsForm">
+                                <div class="form-group">
+                                    <label>Minimum Deposit</label>
+                                    <div class="input-with-prefix">
+                                        <span>Rp</span>
+                                        <input type="number" id="minDeposit" class="form-input" value="10000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Maximum Deposit</label>
+                                    <div class="input-with-prefix">
+                                        <span>Rp</span>
+                                        <input type="number" id="maxDeposit" class="form-input" value="10000000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deposit Fee (%)</label>
+                                    <input type="number" id="depositFee" class="form-input" value="0" min="0" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label>Bonus Deposit (%)</label>
+                                    <input type="number" id="depositBonus" class="form-input" value="0" min="0">
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Settings
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Real-time Monitor -->
+                <div id="adminRealtime" class="content-section">
+                    <div class="page-header">
+                        <h2><i class="fas fa-broadcast-tower"></i> Real-time Monitor</h2>
+                        <div class="realtime-controls">
+                            <span class="live-indicator" id="liveIndicator">
+                                <span class="live-dot"></span> LIVE
+                            </span>
+                            <button class="btn btn-sm" onclick="toggleRealtime()" id="realtimeToggle">
+                                <i class="fas fa-pause"></i> Pause
+                            </button>
+                        </div>
+                    </div>
+                    <div class="realtime-grid">
+                        <!-- Live Stats -->
+                        <div class="realtime-card glass-morphism">
+                            <h3><i class="fas fa-chart-line"></i> Live Statistics</h3>
+                            <div class="live-stats">
+                                <div class="live-stat">
+                                    <div class="stat-icon gradient-blue">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="liveUsers">0</span>
+                                        <span class="stat-label">Online Users</span>
+                                    </div>
+                                </div>
+                                <div class="live-stat">
+                                    <div class="stat-icon gradient-green">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="liveOrdersToday">0</span>
+                                        <span class="stat-label">Orders Today</span>
+                                    </div>
+                                </div>
+                                <div class="live-stat">
+                                    <div class="stat-icon gradient-purple">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="liveRevenue">Rp 0</span>
+                                        <span class="stat-label">Revenue Today</span>
+                                    </div>
+                                </div>
+                                <div class="live-stat">
+                                    <div class="stat-icon gradient-orange">
+                                        <i class="fas fa-cog"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-value" id="liveProcessing">0</span>
+                                        <span class="stat-label">Processing</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Orders Chart -->
+                        <div class="realtime-card glass-morphism">
+                            <h3><i class="fas fa-chart-area"></i> Order Flow (Last Hour)</h3>
+                            <div class="chart-container">
+                                <canvas id="realtimeOrdersChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Live Activity Feed -->
+                        <div class="realtime-card glass-morphism full-width">
+                            <h3><i class="fas fa-stream"></i> Live Activity Feed</h3>
+                            <div class="live-feed" id="liveActivityFeed">
+                                <!-- Real-time activities will appear here -->
+                            </div>
+                        </div>
+
+                        <!-- Server Status -->
+                        <div class="realtime-card glass-morphism">
+                            <h3><i class="fas fa-server"></i> System Status</h3>
+                            <div class="server-status">
+                                <div class="status-item">
+                                    <span class="status-label">Web Server</span>
+                                    <span class="status-badge online">Online</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Database</span>
+                                    <span class="status-badge online">Online</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">API Gateway</span>
+                                    <span class="status-badge online">Online</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Cache Server</span>
+                                    <span class="status-badge warning">Slow</span>
+                                </div>
+                            </div>
+                            <div class="uptime-info">
+                                <i class="fas fa-clock"></i>
+                                <span>Uptime: <strong id="systemUptime">99.9%</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Active Sessions -->
+                        <div class="realtime-card glass-morphism">
+                            <h3><i class="fas fa-user-clock"></i> Active Sessions</h3>
+                            <div class="active-sessions" id="activeSessions">
+                                <!-- Sessions will be rendered here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1042,11 +1703,19 @@
                             <form id="generalSettingsForm">
                                 <div class="form-group">
                                     <label>Site Name</label>
-                                    <input type="text" class="form-input" value="SMM Panel Premium">
+                                    <input type="text" class="form-input" id="siteName" value="SMM Panel Premium">
                                 </div>
                                 <div class="form-group">
                                     <label>Site Description</label>
-                                    <textarea class="form-textarea">Layanan SMM Panel Terbaik dan Termurah</textarea>
+                                    <textarea class="form-textarea" id="siteDescription">Layanan SMM Panel Terbaik dan Termurah</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact Email</label>
+                                    <input type="email" class="form-input" id="contactEmail" placeholder="admin@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>WhatsApp Number</label>
+                                    <input type="text" class="form-input" id="whatsappNumber" placeholder="+6281234567890">
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Save Changes
@@ -1054,7 +1723,43 @@
                             </form>
                         </div>
                         <div class="settings-card glass-morphism">
-                            <h3><i class="fas fa-palette"></i> Appearance</h3>
+                            <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                            <form id="notificationSettingsForm">
+                                <div class="form-group">
+                                    <label>Email Notifications</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="emailNotif" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Push Notifications</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="pushNotif" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Order Updates</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="orderNotif" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>New User Registration</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="userNotif" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Settings
+                                </button>
+                            </form>
+                        </div>
+                        <div class="settings-card glass-morphism">
+                            <h3><i class="fas fa-palette"></i> Quick Theme</h3>
                             <div class="theme-options">
                                 <label class="theme-option">
                                     <input type="radio" name="theme" value="purple" checked>
@@ -1077,6 +1782,29 @@
                                     <span>Dark</span>
                                 </label>
                             </div>
+                        </div>
+                        <div class="settings-card glass-morphism">
+                            <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                            <form id="securitySettingsForm">
+                                <div class="form-group">
+                                    <label>Two-Factor Authentication</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="twoFactor">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Login Attempt Limit</label>
+                                    <input type="number" class="form-input" id="loginAttempts" value="5" min="1" max="10">
+                                </div>
+                                <div class="form-group">
+                                    <label>Session Timeout (minutes)</label>
+                                    <input type="number" class="form-input" id="sessionTimeout" value="30" min="5" max="120">
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Security
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
