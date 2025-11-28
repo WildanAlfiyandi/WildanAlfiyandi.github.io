@@ -2,6 +2,17 @@
 // SMM Panel Premium - Real-time Features
 // ===============================================
 
+// Configuration constants
+const REALTIME_CONFIG = {
+    UPDATE_INTERVAL: 30000,         // Real-time update interval (30 seconds)
+    ORDER_PROCESSING_INTERVAL: 10000, // Order processing check interval (10 seconds)
+    EVENT_SIMULATION_INTERVAL: 15000, // WebSocket event simulation interval (15 seconds)
+    PROCESSING_START_CHANCE: 0.3,   // Chance for pending order to start processing (30%)
+    PROGRESS_INCREMENT_MAX: 200,    // Max progress increment per processing cycle
+    EVENT_TRIGGER_CHANCE: 0.1,      // Chance for simulated event (10%)
+    START_COUNT_MAX: 1000           // Max random start count
+};
+
 // Real-time simulation interval
 let realtimeInterval = null;
 let orderProcessingInterval = null;
@@ -20,10 +31,10 @@ function initRealtime() {
 
 // Start Real-time Updates
 function startRealtimeUpdates() {
-    // Update every 30 seconds
+    // Update every configured interval
     realtimeInterval = setInterval(async () => {
         await updateRealtimeData();
-    }, 30000);
+    }, REALTIME_CONFIG.UPDATE_INTERVAL);
     
     // Initial update
     updateRealtimeData();
@@ -138,10 +149,10 @@ function animateCounter(elementId, targetValue) {
 
 // Order Processing Simulation
 function startOrderProcessing() {
-    // Process orders every 10 seconds
+    // Process orders at configured interval
     orderProcessingInterval = setInterval(async () => {
         await processOrders();
-    }, 10000);
+    }, REALTIME_CONFIG.ORDER_PROCESSING_INTERVAL);
 }
 
 // Process Orders (Simulation)
@@ -151,10 +162,10 @@ async function processOrders() {
         
         for (const order of orders) {
             if (order.status === 'pending') {
-                // 30% chance to start processing
-                if (Math.random() < 0.3) {
+                // Chance to start processing based on config
+                if (Math.random() < REALTIME_CONFIG.PROCESSING_START_CHANCE) {
                     order.status = 'processing';
-                    order.startCount = Math.floor(Math.random() * 1000);
+                    order.startCount = Math.floor(Math.random() * REALTIME_CONFIG.START_COUNT_MAX);
                     await Database.update(STORES.ORDERS, order);
                     
                     // Notify user
@@ -173,7 +184,7 @@ async function processOrders() {
                 }
             } else if (order.status === 'processing') {
                 // Simulate progress
-                const progress = Math.floor(Math.random() * 200);
+                const progress = Math.floor(Math.random() * REALTIME_CONFIG.PROGRESS_INCREMENT_MAX);
                 order.remains = Math.max(0, (order.remains || order.quantity) - progress);
                 
                 if (order.remains <= 0) {
@@ -220,12 +231,12 @@ async function processOrders() {
 
 // WebSocket Simulation (for demo purposes)
 function initWebSocketSimulation() {
-    // Simulate incoming events
+    // Simulate incoming events at configured interval
     setInterval(() => {
-        if (Math.random() < 0.1) { // 10% chance every interval
+        if (Math.random() < REALTIME_CONFIG.EVENT_TRIGGER_CHANCE) {
             simulateIncomingEvent();
         }
-    }, 15000);
+    }, REALTIME_CONFIG.EVENT_SIMULATION_INTERVAL);
 }
 
 // Simulate Incoming Event

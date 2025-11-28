@@ -1,7 +1,7 @@
 {
     "name": "SMM Panel Premium",
     "short_name": "SMM Panel",
-    "description": "Layanan Social Media Marketing Panel Terbaik dan Termurah",
+    "description": "SMM Panel - Social Media Marketing Services Management Application",
     "start_url": "/smm-panel/index.html",
     "display": "standalone",
     "background_color": "#0f0f23",

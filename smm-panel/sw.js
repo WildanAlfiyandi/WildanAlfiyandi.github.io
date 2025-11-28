@@ -59,8 +59,8 @@ self.addEventListener('fetch', (event) => {
                 }
                 
                 return fetch(event.request).then((response) => {
-                    // Check if valid response
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                    // Check if valid response - allow basic and cors types for CDN resources
+                    if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
                         return response;
                     }
                     
